@@ -1,11 +1,13 @@
 package org.example.study.service
 
-import org.example.study.domain.entity.Cart
 import org.example.study.repository.CartRepository
 import org.example.study.repository.dto.CreateCartItemDto
+import org.example.study.repository.dto.DeleteCartItemDto
 import org.example.study.repository.vo.CreateCartVo
 import org.example.study.service.reponse.CreateCartItemResponse
+import org.example.study.service.reponse.DeleteCartItemResponse
 import org.example.study.service.request.CreateCartItemRequest
+import org.example.study.service.request.DeleteCartItemRequest
 
 class CartService(
     private var cartRepository: CartRepository
@@ -17,15 +19,17 @@ class CartService(
     }
 
     // 장바구니 상품 추가
-    fun addCartItem(req : CreateCartItemRequest) : CreateCartItemResponse {
-        val dto = CreateCartItemDto(req.cartId, req.itemId, req.cnt)
+    fun addCartItem(req: CreateCartItemRequest): CreateCartItemResponse {
+        val dto = CreateCartItemDto(req.cartId, req.cnt)
         val vo = cartRepository.createCartItem(dto)
-        return CreateCartItemResponse(vo.cartId, vo.itemId, vo.cnt)
+        return CreateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
     }
 
     // 장바구니 상품 제거
-    fun deleteItem() {
-
+    fun deleteCartItem(req: DeleteCartItemRequest): DeleteCartItemResponse {
+        val dto = DeleteCartItemDto(req.cartId, req.cartItemId)
+        val vo = cartRepository.deleteCartItem(dto)
+        return DeleteCartItemResponse(vo.cartId, vo.cartItems)
     }
 
     // 장바구니 상품 수정 (수량, 옵션 등..)

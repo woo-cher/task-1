@@ -7,6 +7,7 @@ import org.example.study.domain.id.Ids
 import org.example.study.repository.CartRepository
 import org.example.study.service.CartService
 import org.example.study.service.request.CreateCartItemRequest
+import org.example.study.service.request.DeleteCartItemRequest
 
 class CartIntegrationTest : FunSpec({
     lateinit var cartService: CartService
@@ -25,13 +26,22 @@ class CartIntegrationTest : FunSpec({
         val request = CreateCartItemRequest(Ids.CartId(1L), Ids.ItemId(1L), 1)
         val response = cartService.addCartItem(request)
 
-        println("added : $response")
+        println("created : $response")
 
         with(response) {
             shouldNotBeNull()
             cartId shouldBe request.cartId
-            itemId shouldBe request.itemId
             cnt shouldBe request.cnt
         }
+    }
+
+    test("장바구니 상품 제거") {
+        val createRequest = CreateCartItemRequest(Ids.CartId(1L), Ids.ItemId(1L), 1)
+        val createVo = cartService.addCartItem(createRequest)
+        val deleteRequest = DeleteCartItemRequest(createRequest.cartId, createVo.cartItemId)
+        val deleteResponse = cartService.deleteCartItem(deleteRequest)
+
+        deleteResponse.cartId shouldBe deleteRequest.cartId
+        deleteResponse.cartItems.none { it.cartId == deleteRequest.cartId } shouldBe true
     }
 })
