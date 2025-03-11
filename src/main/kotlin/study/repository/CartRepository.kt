@@ -5,31 +5,49 @@ import org.example.study.domain.entity.CartItem
 import org.example.study.domain.id.Ids
 import org.example.study.repository.dto.CreateCartItemDto
 import org.example.study.repository.dto.DeleteCartItemDto
+import org.example.study.repository.dto.UpdateCartItemDto
 import org.example.study.repository.vo.CreateCartItemVo
 import org.example.study.repository.vo.CreateCartVo
 import org.example.study.repository.vo.DeleteCartItemVo
+import org.example.study.repository.vo.UpdateCartItemVo
 
 class CartRepository(
     private var cartNum: Long = 1L,
     private var cartItemNum: Long = 1L,
-    private val carts: MutableMap<Ids.CartId, List<CartItem>> = mutableMapOf()
+    private val carts: MutableMap<Ids.CartId, MutableList<CartItem>> = mutableMapOf()
 ) {
 
     fun createCart(): CreateCartVo {
         val cartId = Ids.CartId(cartNum)
         val created = Cart(cartId, ArrayList())
+
+        carts[created.cartId] = created.cartItems
         cartNum = Ids.autoIncrement(cartNum)
+
         return CreateCartVo(created.cartId, carts.getOrDefault(created.cartId, ArrayList()))
     }
 
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {
-        val created = CreateCartItemVo(dto.cartId, Ids.CartItemId(cartItemNum), dto.cnt)
+        val cartItem = CartItem(Ids.CartItemId(cartItemNum), dto.cartId, dto.itemId, dto.cnt)
+
+        val target = carts.getOrDefault(cartItem.cartId, mutableListOf())
+        target.add(cartItem)
+
+        val created = target.first { it.itemId == cartItem.itemId}
         cartItemNum = Ids.autoIncrement(cartItemNum)
-        return created
+
+        return CreateCartItemVo(created.cartId, created.cartItemId, created.cnt)
     }
 
     fun deleteCartItem(dto: DeleteCartItemDto): DeleteCartItemVo {
-        this.carts.remove(dto.cartId)
+        carts.remove(dto.cartId)
         return DeleteCartItemVo(dto.cartId, carts.getOrDefault(dto.cartId, ArrayList()))
+    }
+
+    fun updateCartItem(dto: UpdateCartItemDto): UpdateCartItemVo {
+        val target = carts.getOrDefault(dto.cartId, ArrayList()).first { it.cartItemId == dto.cartItemId }
+        target.cnt = dto.cnt
+
+        return UpdateCartItemVo(dto.cartId, dto.cartItemId, target.cnt)
     }
 }
