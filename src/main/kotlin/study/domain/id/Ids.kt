@@ -9,4 +9,8 @@ object Ids {
     value class CartItemId(val id: Long)
     @JvmInline
     value class OrderId(val id: Long)
+
+    fun autoIncrement(num: Long): Long {
+        return num + 1
+    }
 }
