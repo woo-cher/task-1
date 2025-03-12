@@ -1,18 +1,18 @@
 package org.example.study.service
 
 import org.example.study.repository.CartRepository
-import org.example.study.repository.dto.CreateCartDto
-import org.example.study.repository.dto.CreateCartItemDto
-import org.example.study.repository.dto.DeleteCartItemDto
-import org.example.study.repository.dto.UpdateCartItemDto
-import org.example.study.repository.vo.CreateCartVo
-import org.example.study.service.reponse.CreateCartItemResponse
-import org.example.study.service.reponse.DeleteCartItemResponse
-import org.example.study.service.reponse.UpdateCartItemResponse
-import org.example.study.service.request.CreateCartItemRequest
-import org.example.study.service.request.CreateCartRequest
-import org.example.study.service.request.DeleteCartItemRequest
-import org.example.study.service.request.UpdateCartItemRequest
+import org.example.study.repository.cart.dto.CreateCartDto
+import org.example.study.repository.cart_item.dto.CreateCartItemDto
+import org.example.study.repository.cart_item.dto.DeleteCartItemDto
+import org.example.study.repository.cart_item.dto.UpdateCartItemDto
+import org.example.study.repository.cart.vo.CreateCartVo
+import org.example.study.service.cart_item.response.CreateCartItemResponse
+import org.example.study.service.cart_item.response.DeleteCartItemResponse
+import org.example.study.service.cart_item.response.UpdateCartItemResponse
+import org.example.study.service.cart_item.request.CreateCartItemRequest
+import org.example.study.service.cart.request.CreateCartRequest
+import org.example.study.service.cart_item.request.DeleteCartItemRequest
+import org.example.study.service.cart_item.request.UpdateCartItemRequest
 
 class CartService(
     private var cartRepository: CartRepository

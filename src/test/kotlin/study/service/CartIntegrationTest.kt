@@ -6,10 +6,10 @@ import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
 import org.example.study.repository.CartRepository
 import org.example.study.service.CartService
-import org.example.study.service.request.CreateCartItemRequest
-import org.example.study.service.request.CreateCartRequest
-import org.example.study.service.request.DeleteCartItemRequest
-import org.example.study.service.request.UpdateCartItemRequest
+import org.example.study.service.cart_item.request.CreateCartItemRequest
+import org.example.study.service.cart.request.CreateCartRequest
+import org.example.study.service.cart_item.request.DeleteCartItemRequest
+import org.example.study.service.cart_item.request.UpdateCartItemRequest
 
 class CartIntegrationTest: FunSpec({
     lateinit var cartService: CartService

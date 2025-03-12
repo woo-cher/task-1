@@ -3,14 +3,14 @@ package org.example.study.repository
 import org.example.study.domain.entity.Cart
 import org.example.study.domain.entity.CartItem
 import org.example.study.domain.id.Ids
-import org.example.study.repository.dto.CreateCartDto
-import org.example.study.repository.dto.CreateCartItemDto
-import org.example.study.repository.dto.DeleteCartItemDto
-import org.example.study.repository.dto.UpdateCartItemDto
-import org.example.study.repository.vo.CreateCartItemVo
-import org.example.study.repository.vo.CreateCartVo
-import org.example.study.repository.vo.DeleteCartItemVo
-import org.example.study.repository.vo.UpdateCartItemVo
+import org.example.study.repository.cart.dto.CreateCartDto
+import org.example.study.repository.cart_item.dto.CreateCartItemDto
+import org.example.study.repository.cart_item.dto.DeleteCartItemDto
+import org.example.study.repository.cart_item.dto.UpdateCartItemDto
+import org.example.study.repository.cart_item.vo.CreateCartItemVo
+import org.example.study.repository.cart.vo.CreateCartVo
+import org.example.study.repository.cart_item.vo.DeleteCartItemVo
+import org.example.study.repository.cart_item.vo.UpdateCartItemVo
 
 class CartRepository(
     private var cartNum: Long = 1L,
