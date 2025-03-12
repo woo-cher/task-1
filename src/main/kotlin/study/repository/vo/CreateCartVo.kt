@@ -5,5 +5,6 @@ import org.example.study.domain.id.Ids
 
 data class CreateCartVo(
     val cartId: Ids.CartId,
-    val cartItems: List<CartItem>
+    val cartItems: List<CartItem>,
+    val userId: Ids.UserId
 )

@@ -3,6 +3,7 @@ package org.example.study.repository
 import org.example.study.domain.entity.Cart
 import org.example.study.domain.entity.CartItem
 import org.example.study.domain.id.Ids
+import org.example.study.repository.dto.CreateCartDto
 import org.example.study.repository.dto.CreateCartItemDto
 import org.example.study.repository.dto.DeleteCartItemDto
 import org.example.study.repository.dto.UpdateCartItemDto
@@ -17,14 +18,14 @@ class CartRepository(
     private val carts: MutableMap<Ids.CartId, MutableList<CartItem>> = mutableMapOf()
 ) {
 
-    fun createCart(): CreateCartVo {
+    fun createCart(dto: CreateCartDto): CreateCartVo {
         val cartId = Ids.CartId(cartNum)
-        val created = Cart(cartId, ArrayList())
+        val created = Cart(cartId, ArrayList(), dto.userId)
 
         carts[created.cartId] = created.cartItems
         cartNum = Ids.autoIncrement(cartNum)
 
-        return CreateCartVo(created.cartId, carts.getOrDefault(created.cartId, ArrayList()))
+        return CreateCartVo(created.cartId, carts.getOrDefault(created.cartId, ArrayList()), dto.userId)
     }
 
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {

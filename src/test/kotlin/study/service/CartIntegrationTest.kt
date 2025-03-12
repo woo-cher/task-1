@@ -7,24 +7,31 @@ import org.example.study.domain.id.Ids
 import org.example.study.repository.CartRepository
 import org.example.study.service.CartService
 import org.example.study.service.request.CreateCartItemRequest
+import org.example.study.service.request.CreateCartRequest
 import org.example.study.service.request.DeleteCartItemRequest
 import org.example.study.service.request.UpdateCartItemRequest
 
-class CartIntegrationTest : FunSpec({
+class CartIntegrationTest: FunSpec({
     lateinit var cartService: CartService
+    val testUserId = Ids.UserId("testUser")
+    val createCartRequest = CreateCartRequest(testUserId)
 
     beforeTest {
         cartService = CartService(CartRepository())
     }
 
     test("장바구니 생성") {
-        val created = cartService.create()
+        val created = cartService.create(createCartRequest)
         println("created : $created")
-        created.shouldNotBeNull()
+
+        with(created) {
+            shouldNotBeNull()
+            userId shouldBe testUserId
+        }
     }
 
     test("장바구니 상품 추가") {
-        val cart = cartService.create()
+        val cart = cartService.create(createCartRequest)
         val request = CreateCartItemRequest(cart.cartId, Ids.ItemId(1L), 1)
 
         val response = cartService.createCartItem(request)
@@ -39,7 +46,7 @@ class CartIntegrationTest : FunSpec({
     }
 
     test("장바구니 상품 제거") {
-        val cart = cartService.create()
+        val cart = cartService.create(createCartRequest)
         val createRequest = CreateCartItemRequest(cart.cartId, Ids.ItemId(1L), 1)
         val createVo = cartService.createCartItem(createRequest)
         val deleteRequest = DeleteCartItemRequest(createRequest.cartId, createVo.cartItemId)
@@ -51,7 +58,7 @@ class CartIntegrationTest : FunSpec({
     }
 
     test("장바구니 상품 수량 변경") {
-        val cart = cartService.create()
+        val cart = cartService.create(createCartRequest)
         val createRequest = CreateCartItemRequest(cart.cartId, Ids.ItemId(1L), 1)
         val createVo = cartService.createCartItem(createRequest)
 
