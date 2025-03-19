@@ -1,6 +1,7 @@
 package study.service
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
@@ -25,7 +26,7 @@ class CartIntegrationTest: FunSpec({
         println("created : $created")
 
         with(created) {
-            shouldNotBeNull()
+            cartItems.shouldNotBeEmpty()
             userId shouldBe testUserId
         }
     }

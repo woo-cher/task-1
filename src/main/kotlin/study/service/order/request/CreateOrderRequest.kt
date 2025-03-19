@@ -1,10 +1,9 @@
-package org.example.study.repository.order.dto
+package org.example.study.service.order.request
 
 import org.example.study.domain.entity.CartItem
 import org.example.study.domain.id.Ids
 
-data class CreateOrderDto(
+data class CreateOrderRequest(
     val userId: Ids.UserId,
     val cartItems: List<CartItem>,
-    val price: Long,
 )

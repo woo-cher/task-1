@@ -15,7 +15,7 @@ import org.example.study.service.cart_item.response.DeleteCartItemResponse
 import org.example.study.service.cart_item.response.UpdateCartItemResponse
 
 class CartService(
-    private var cartRepository: CartRepository
+    private val cartRepository: CartRepository
 ) {
     fun create(req: CreateCartRequest): CreateCartResponse {
         val dto = CreateCartDto(req.userId)

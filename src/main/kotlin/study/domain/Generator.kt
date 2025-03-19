@@ -11,6 +11,6 @@ object Generator {
     }.toMutableMap()
 
     private fun name(num: Long): String = "상품$num"
-    private fun price(): Int = Random.nextInt(5000, 100001)
-    private fun fee(): Int = Random.nextInt(0, 50001)
+    private fun price(): Long = Random.nextLong(5000L, 100001L)
+    private fun fee(): Long = Random.nextLong(0L, 50001L)
 }
