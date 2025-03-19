@@ -28,6 +28,7 @@ class CartRepository(
         return CreateCartVo(created.cartId, carts.getOrDefault(created.cartId, ArrayList()), dto.userId)
     }
 
+    // todo) Item 조회하여 가격 추가해야 한다
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {
         val cartItem = CartItem(Ids.CartItemId(cartItemNum), dto.cartId, dto.itemId, 1000, dto.cnt, ShippingStatus.NONE)
 
