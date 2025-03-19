@@ -2,6 +2,7 @@ package org.example.study.repository
 
 import org.example.study.domain.entity.Cart
 import org.example.study.domain.entity.CartItem
+import org.example.study.domain.enums.ShippingStatus
 import org.example.study.domain.id.Ids
 import org.example.study.repository.cart.dto.CreateCartDto
 import org.example.study.repository.cart_item.dto.CreateCartItemDto
@@ -29,7 +30,7 @@ class CartRepository(
     }
 
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {
-        val cartItem = CartItem(Ids.CartItemId(cartItemNum), dto.cartId, dto.itemId, dto.cnt)
+        val cartItem = CartItem(Ids.CartItemId(cartItemNum), dto.cartId, dto.itemId, dto.cnt, ShippingStatus.NONE)
 
         val target = carts.getOrDefault(cartItem.cartId, mutableListOf())
         target.add(cartItem)
