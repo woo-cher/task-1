@@ -42,7 +42,7 @@ class CartRepository(
     }
 
     fun deleteCartItem(dto: DeleteCartItemDto): DeleteCartItemVo {
-        carts.remove(dto.cartId)
+        carts[dto.cartId]?.removeIf { it.cartItemId == dto.cartItemId }
         return DeleteCartItemVo(dto.cartId, carts.getOrDefault(dto.cartId, ArrayList()))
     }
 
