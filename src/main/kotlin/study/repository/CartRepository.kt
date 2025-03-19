@@ -22,8 +22,7 @@ class CartRepository(
     fun createCart(dto: CreateCartDto): CreateCartVo {
         val cartId = Ids.CartId(cartNum)
         val created = Cart(cartId, ArrayList(), dto.userId)
-
-        carts[created.cartId] = created.cartItems
+        carts.put(created.cartId, created.cartItems)
         cartNum = Ids.autoIncrement(cartNum)
 
         return CreateCartVo(created.cartId, carts.getOrDefault(created.cartId, ArrayList()), dto.userId)
@@ -32,10 +31,10 @@ class CartRepository(
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {
         val cartItem = CartItem(Ids.CartItemId(cartItemNum), dto.cartId, dto.itemId, 1000, dto.cnt, ShippingStatus.NONE)
 
-        val target = carts.getOrDefault(cartItem.cartId, mutableListOf())
+        val target = carts.getOrPut(cartItem.cartId) { mutableListOf() }
         target.add(cartItem)
 
-        val created = target.first { it.itemId == cartItem.itemId}
+        val created = target.first { it.itemId == cartItem.itemId }
         cartItemNum = Ids.autoIncrement(cartItemNum)
 
         return CreateCartItemVo(created.cartId, created.cartItemId, created.cnt)
