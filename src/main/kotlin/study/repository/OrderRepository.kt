@@ -12,7 +12,7 @@ class OrderRepository(
 ) {
     fun createOrder(dto: CreateOrderDto): CreateOrderVo {
         val orderId = Ids.OrderId(orderNum)
-        Ids.autoIncrement(orderNum)
+        orderNum = Ids.autoIncrement(orderNum)
 
         val created = Order(orderId, dto.userId, dto.cartItems, OrderStatus.PROCESSED, dto.price)
         orders[orderId] = created

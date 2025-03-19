@@ -4,14 +4,13 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
-import org.example.study.domain.Generator
-import org.example.study.domain.entity.CartItem
 import org.example.study.domain.enums.OrderStatus
-import org.example.study.domain.enums.ShippingStatus
 import org.example.study.domain.id.Ids
 import org.example.study.repository.OrderRepository
 import org.example.study.service.OrderService
 import org.example.study.service.order.request.CreateOrderRequest
+import study.generator.TestCartItemGenerator
+import study.generator.TestItemGenerator
 
 class OrderIntegrationTest: FunSpec({
     lateinit var orderService: OrderService
@@ -23,11 +22,8 @@ class OrderIntegrationTest: FunSpec({
     }
 
     test("주문 생성") {
-        val items = Generator.generateItems()
-        val cartItems = items.values.map {
-            val cartItemId = 0L
-            CartItem(Ids.CartItemId(cartItemId), testCart, it.itemId, it.price, 1, ShippingStatus.NONE)
-        }
+        val items = TestItemGenerator.generate()
+        val cartItems = TestCartItemGenerator.generate(items, testCart)
         val request = CreateOrderRequest(testUser, cartItems)
         val response = orderService.create(request)
 

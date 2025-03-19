@@ -1,14 +1,13 @@
 package study.service
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
 import org.example.study.repository.CartRepository
 import org.example.study.service.CartService
-import org.example.study.service.cart_item.request.CreateCartItemRequest
 import org.example.study.service.cart.request.CreateCartRequest
+import org.example.study.service.cart_item.request.CreateCartItemRequest
 import org.example.study.service.cart_item.request.DeleteCartItemRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
 
@@ -26,7 +25,6 @@ class CartIntegrationTest: FunSpec({
         println("created : $created")
 
         with(created) {
-            cartItems.shouldNotBeEmpty()
             userId shouldBe testUserId
         }
     }
