@@ -15,5 +15,5 @@ class OrderService(
         return CreateOrderResponse(created.orderId, created.userId, created.cartItems, created.status, created.price)
     }
 
-    private fun calculatePrice(cartItems: List<CartItem>) = cartItems.sumOf { it.price }
+    private fun calculatePrice(cartItems: List<CartItem>) = cartItems.sumOf { it.price * it.cnt }
 }
