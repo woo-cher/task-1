@@ -9,11 +9,11 @@ import org.example.study.service.order.response.CreateOrderResponse
 class OrderService(
     private val orderRepository: OrderRepository
 ) {
-    fun create(request: CreateOrderRequest): CreateOrderResponse {
-        val dto = CreateOrderDto(request.userId, request.cartItems, calculatePrice(request.cartItems))
-        val created = orderRepository.createOrder(dto)
+    fun create(req: CreateOrderRequest): CreateOrderResponse {
+        val created = orderRepository.createOrder(req.toDto())
         return CreateOrderResponse(created.orderId, created.userId, created.cartItems, created.status, created.price)
     }
 
+    private fun CreateOrderRequest.toDto() = CreateOrderDto(userId, cartItems, calculatePrice(cartItems))
     private fun calculatePrice(cartItems: List<CartItem>) = cartItems.sumOf { it.price * it.cnt }
 }

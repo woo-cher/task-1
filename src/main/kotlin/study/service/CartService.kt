@@ -23,29 +23,29 @@ class CartService(
 ) {
 
     fun create(req: CreateCartRequest): CreateCartResponse {
-        val dto = CreateCartDto(req.userId)
-        val created = cartRepository.createCart(dto)
+        val created = cartRepository.createCart(req.toDto())
         return CreateCartResponse(created.cartId, created.cartItems, created.userId)
     }
 
     fun createCartItem(req: CreateCartItemRequest): CreateCartItemResponse {
         val item = getItem(req.itemId)
-        val dto = CreateCartItemDto(req.cartId, req.itemId, item.price, req.cnt)
-        val vo = cartRepository.createCartItem(dto)
+        val vo = cartRepository.createCartItem(req.toDto(item.price))
         return CreateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
     }
 
     fun deleteCartItem(req: DeleteCartItemRequest): DeleteCartItemResponse {
-        val dto = DeleteCartItemDto(req.cartId, req.cartItemId)
-        val vo = cartRepository.deleteCartItem(dto)
+        val vo = cartRepository.deleteCartItem(req.toDto())
         return DeleteCartItemResponse(vo.cartId, vo.cartItems)
     }
 
     fun updateCartItem(req: UpdateCartItemRequest): UpdateCartItemResponse {
-        val dto = UpdateCartItemDto(req.cartId, req.cartItemId, req.cnt)
-        val vo = cartRepository.updateCartItem(dto)
+        val vo = cartRepository.updateCartItem(req.toDto())
         return UpdateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
     }
 
+    private fun CreateCartRequest.toDto() = CreateCartDto(userId)
+    private fun CreateCartItemRequest.toDto(price: Long) = CreateCartItemDto(cartId, itemId, price, cnt)
+    private fun DeleteCartItemRequest.toDto() = DeleteCartItemDto(cartId, cartItemId)
+    private fun UpdateCartItemRequest.toDto() = UpdateCartItemDto(cartId, cartItemId, cnt)
     private fun getItem(itemId: Ids.ItemId) = itemRepository.findById(GetItemDto(itemId))
 }
