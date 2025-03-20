@@ -7,10 +7,10 @@ import org.example.study.domain.id.Ids
 import org.example.study.repository.cart.dto.CreateCartDto
 import org.example.study.repository.cart.vo.CreateCartVo
 import org.example.study.repository.cart_item.dto.CreateCartItemDto
-import org.example.study.repository.cart_item.dto.DeleteCartItemDto
+import org.example.study.repository.cart_item.dto.DeleteCartItemsDto
 import org.example.study.repository.cart_item.dto.UpdateCartItemDto
 import org.example.study.repository.cart_item.vo.CreateCartItemVo
-import org.example.study.repository.cart_item.vo.DeleteCartItemVo
+import org.example.study.repository.cart_item.vo.DeleteCartItemsVo
 import org.example.study.repository.cart_item.vo.UpdateCartItemVo
 
 class CartRepository(
@@ -22,7 +22,7 @@ class CartRepository(
     fun createCart(dto: CreateCartDto): CreateCartVo {
         val cartId = Ids.CartId(cartNum)
         val created = Cart(cartId, ArrayList(), dto.userId)
-        carts.put(created.cartId, created.cartItems)
+        carts.put(created.cartId, created.cartItems.toMutableList())
         cartNum = Ids.autoIncrement(cartNum)
 
         return CreateCartVo(created.cartId, carts.getOrDefault(created.cartId, ArrayList()), dto.userId)
@@ -40,9 +40,9 @@ class CartRepository(
         return CreateCartItemVo(created.cartId, created.cartItemId, created.cnt)
     }
 
-    fun deleteCartItem(dto: DeleteCartItemDto): DeleteCartItemVo {
-        carts[dto.cartId]?.removeIf { it.cartItemId == dto.cartItemId }
-        return DeleteCartItemVo(dto.cartId, carts.getOrDefault(dto.cartId, ArrayList()))
+    fun deleteCartItems(dto: DeleteCartItemsDto): DeleteCartItemsVo {
+        carts[dto.cartId]?.removeAll { it.cartItemId in dto.cartItemIds }
+        return DeleteCartItemsVo(dto.cartId, carts.getOrPut(dto.cartId) { mutableListOf() })
     }
 
     fun updateCartItem(dto: UpdateCartItemDto): UpdateCartItemVo {

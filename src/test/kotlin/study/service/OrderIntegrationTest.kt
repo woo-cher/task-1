@@ -6,6 +6,7 @@ import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.enums.OrderStatus
 import org.example.study.domain.id.Ids
+import org.example.study.repository.CartRepository
 import org.example.study.repository.OrderRepository
 import org.example.study.service.OrderService
 import org.example.study.service.order.request.CreateOrderRequest
@@ -18,13 +19,13 @@ class OrderIntegrationTest: FunSpec({
     val testCart: Ids.CartId = Ids.CartId(1)
 
     beforeTest {
-        orderService = OrderService(OrderRepository())
+        orderService = OrderService(OrderRepository(), CartRepository())
     }
 
     test("주문 생성") {
         val items = TestItemGenerator.generate()
         val cartItems = TestCartItemGenerator.generate(items, testCart)
-        val request = CreateOrderRequest(testUser, cartItems)
+        val request = CreateOrderRequest(testUser, testCart, cartItems)
         val response = orderService.create(request)
 
         println("created: $response")

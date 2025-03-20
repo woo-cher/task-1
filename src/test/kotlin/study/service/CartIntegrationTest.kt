@@ -1,6 +1,7 @@
 package study.service
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
@@ -9,7 +10,7 @@ import org.example.study.repository.ItemRepository
 import org.example.study.service.CartService
 import org.example.study.service.cart.request.CreateCartRequest
 import org.example.study.service.cart_item.request.CreateCartItemRequest
-import org.example.study.service.cart_item.request.DeleteCartItemRequest
+import org.example.study.service.cart_item.request.DeleteCartItemsRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
 
 class CartIntegrationTest: FunSpec({
@@ -49,12 +50,12 @@ class CartIntegrationTest: FunSpec({
         val cart = cartService.create(createCartRequest)
         val createRequest = CreateCartItemRequest(cart.cartId, Ids.ItemId(1L), 1)
         val createVo = cartService.createCartItem(createRequest)
-        val deleteRequest = DeleteCartItemRequest(createRequest.cartId, createVo.cartItemId)
-
-        val deleteResponse = cartService.deleteCartItem(deleteRequest)
+        val deleteItemIds = listOf(createVo.cartItemId)
+        val deleteRequest = DeleteCartItemsRequest(createRequest.cartId, deleteItemIds)
+        val deleteResponse = cartService.deleteCartItems(deleteRequest)
 
         deleteResponse.cartId shouldBe deleteRequest.cartId
-        deleteResponse.cartItems.none { it.cartId == deleteRequest.cartId } shouldBe true
+        deleteResponse.cartItems shouldNotContainAnyOf deleteItemIds
     }
 
     test("장바구니 상품 수량 변경") {

@@ -5,13 +5,13 @@ import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.cart.dto.CreateCartDto
 import org.example.study.repository.cart_item.dto.CreateCartItemDto
-import org.example.study.repository.cart_item.dto.DeleteCartItemDto
+import org.example.study.repository.cart_item.dto.DeleteCartItemsDto
 import org.example.study.repository.cart_item.dto.UpdateCartItemDto
 import org.example.study.repository.item.dto.GetItemDto
 import org.example.study.service.cart.request.CreateCartRequest
 import org.example.study.service.cart.response.CreateCartResponse
 import org.example.study.service.cart_item.request.CreateCartItemRequest
-import org.example.study.service.cart_item.request.DeleteCartItemRequest
+import org.example.study.service.cart_item.request.DeleteCartItemsRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
 import org.example.study.service.cart_item.response.CreateCartItemResponse
 import org.example.study.service.cart_item.response.DeleteCartItemResponse
@@ -33,9 +33,9 @@ class CartService(
         return CreateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
     }
 
-    fun deleteCartItem(req: DeleteCartItemRequest): DeleteCartItemResponse {
-        val vo = cartRepository.deleteCartItem(req.toDto())
-        return DeleteCartItemResponse(vo.cartId, vo.cartItems)
+    fun deleteCartItems(req: DeleteCartItemsRequest): DeleteCartItemResponse {
+        val vo = cartRepository.deleteCartItems(req.toDto())
+        return DeleteCartItemResponse(vo.cartIds, vo.cartItems)
     }
 
     fun updateCartItem(req: UpdateCartItemRequest): UpdateCartItemResponse {
@@ -45,7 +45,7 @@ class CartService(
 
     private fun CreateCartRequest.toDto() = CreateCartDto(userId)
     private fun CreateCartItemRequest.toDto(price: Long) = CreateCartItemDto(cartId, itemId, price, cnt)
-    private fun DeleteCartItemRequest.toDto() = DeleteCartItemDto(cartId, cartItemId)
+    private fun DeleteCartItemsRequest.toDto() = DeleteCartItemsDto(cartId, cartItemIds)
     private fun UpdateCartItemRequest.toDto() = UpdateCartItemDto(cartId, cartItemId, cnt)
     private fun getItem(itemId: Ids.ItemId) = itemRepository.findById(GetItemDto(itemId))
 }
