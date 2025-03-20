@@ -16,16 +16,18 @@ import org.example.study.repository.cart_item.vo.UpdateCartItemVo
 class CartRepository(
     private var cartNum: Long = 1L,
     private var cartItemNum: Long = 1L,
-    private val carts: MutableMap<Ids.CartId, MutableList<CartItem>> = mutableMapOf()
+    private val carts: MutableMap<Ids.CartId, MutableList<CartItem>> = mutableMapOf(),
+    private val cartszz: MutableMap<Ids.UserId, Cart> = mutableMapOf()
 ) {
 
     fun createCart(dto: CreateCartDto): CreateCartVo {
         val cartId = Ids.CartId(cartNum)
-        val created = Cart(cartId, ArrayList(), dto.userId)
-        carts.put(created.cartId, created.cartItems.toMutableList())
+        val cart = Cart(cartId, ArrayList(), dto.userId)
+
+        cartszz.put(dto.userId, cart)
         cartNum = Ids.autoIncrement(cartNum)
 
-        return CreateCartVo(created.cartId, carts.getOrDefault(created.cartId, ArrayList()), dto.userId)
+        return CreateCartVo(cart)
     }
 
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {

@@ -24,7 +24,7 @@ class CartService(
 
     fun create(req: CreateCartRequest): CreateCartResponse {
         val created = cartRepository.createCart(req.toDto())
-        return CreateCartResponse(created.cartId, created.cartItems, created.userId)
+        return CreateCartResponse(created.cart)
     }
 
     fun createCartItem(req: CreateCartItemRequest): CreateCartItemResponse {

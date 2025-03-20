@@ -1,10 +1,7 @@
 package org.example.study.repository.cart.vo
 
-import org.example.study.domain.entity.CartItem
-import org.example.study.domain.id.Ids
+import org.example.study.domain.entity.Cart
 
 data class CreateCartVo(
-    val cartId: Ids.CartId,
-    val cartItems: List<CartItem>,
-    val userId: Ids.UserId
+    val cart: Cart
 )
