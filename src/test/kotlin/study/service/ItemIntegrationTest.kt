@@ -15,7 +15,7 @@ class ItemIntegrationTest: DescribeSpec({
 
     describe("상품 조회") {
         context("성공 케이스") {
-            it("상품 ID 로 조회") {
+            it("상품 ID 로 조회 가능") {
                 val nonNullableItemId = Ids.ItemId(1L)
                 val dto = GetItemDto(nonNullableItemId)
                 val dbItem = itemRepository.findById(dto)
@@ -30,7 +30,7 @@ class ItemIntegrationTest: DescribeSpec({
         }
 
         context("실패 케이스") {
-            it("존재하지 않는 상품 ID") {
+            it("상품 조회 실패 - not found") {
                 val notFoundId = Ids.ItemId(20L)
                 val dto = GetItemDto(notFoundId)
                 shouldThrow<IllegalArgumentException> {

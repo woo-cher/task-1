@@ -1,12 +1,14 @@
 package study.service
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
+import org.example.study.exception.CartAlreadyExistException
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.CartService
@@ -17,7 +19,7 @@ import org.example.study.service.cart_item.request.DeleteCartItemsRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
 
 @DisplayName("장바구니 통합 테스트")
-class CartIntegrationTest: FunSpec({
+class CartIntegrationTest: DescribeSpec({
     lateinit var cartService: CartService
     val testUserId = Ids.UserId("testUser")
     val createCartRequest = CreateCartRequest(testUserId)
@@ -26,16 +28,31 @@ class CartIntegrationTest: FunSpec({
         cartService = CartService(CartRepository(), ItemRepository(), CartPolicy())
     }
 
-    test("장바구니 생성") {
-        val createdCartRes = cartService.create(createCartRequest)
-        println("created : $createdCartRes")
+    describe("장바구니 생성") {
+        context("성공 케이스") {
+            it("장바구니 정상 생성") {
+                val createdCartRes = cartService.create(createCartRequest)
+                println("created : $createdCartRes")
 
-        with(createdCartRes) {
-            cart.userId shouldBe testUserId
+                with(createdCartRes) {
+                    cart.userId shouldBe testUserId
+                }
+            }
         }
+        context("실패 케이스") {
+            it("장바구니 생성 실패 - already exist") {
+                cartService.create(createCartRequest) // first create
+                val secondCreateCartRequest = CreateCartRequest(testUserId)
+
+                shouldThrow<CartAlreadyExistException> {
+                    cartService.create(secondCreateCartRequest)
+                }
+            }
+        }
+
     }
 
-    test("장바구니 사용자 ID로 조회") {
+    it("장바구니 사용자 ID로 조회") {
         val createdCartRes = cartService.create(createCartRequest)
         val request = GetCartByUserRequest(testUserId)
 
@@ -47,7 +64,7 @@ class CartIntegrationTest: FunSpec({
         }
     }
 
-    test("장바구니 상품 추가") {
+    it("장바구니 상품 추가") {
         val createdCartRes = cartService.create(createCartRequest)
         val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
 
@@ -62,7 +79,7 @@ class CartIntegrationTest: FunSpec({
         }
     }
 
-    test("장바구니 상품 제거") {
+    it("장바구니 상품 제거") {
         val createdCartRes = cartService.create(createCartRequest)
         val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
         val createVo = cartService.createCartItem(createRequest)
@@ -74,7 +91,7 @@ class CartIntegrationTest: FunSpec({
         deleteResponse.cartItems shouldNotContainAnyOf deleteItemIds
     }
 
-    test("장바구니 상품 수량 변경") {
+    it("장바구니 상품 수량 변경") {
         val createdCartRes = cartService.create(createCartRequest)
         val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
         val createVo = cartService.createCartItem(createRequest)
