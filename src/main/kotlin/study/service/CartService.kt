@@ -1,6 +1,9 @@
 package org.example.study.service
 
 import org.example.study.domain.id.Ids
+import org.example.study.domain.policy.CartPolicy
+import org.example.study.exception.CartAlreadyExistException
+import org.example.study.exception.errors.CartErrors
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.cart.dto.CreateCartDto
@@ -22,9 +25,13 @@ import org.example.study.service.cart_item.response.UpdateCartItemResponse
 
 class CartService(
     private val cartRepository: CartRepository,
-    private val itemRepository: ItemRepository
+    private val itemRepository: ItemRepository,
+    private val cartPolicy: CartPolicy
 ) {
     fun create(req: CreateCartRequest): CreateCartResponse {
+        val cartSupplier = { cartRepository.findCartByUser(GetCartByUserDto(req.userId)).cart }
+        cartPolicy.canCreateCart(cartSupplier, this::alreadyCartExist)
+
         val created = cartRepository.createCart(req.toDto())
         return CreateCartResponse(created.cart)
     }
@@ -57,4 +64,8 @@ class CartService(
     private fun GetCartByUserRequest.toDto() = GetCartByUserDto(userId)
 
     private fun getItem(itemId: Ids.ItemId) = itemRepository.findById(GetItemDto(itemId))
+
+    private fun alreadyCartExist(userId: Ids.UserId) {
+        throw CartAlreadyExistException(CartErrors.CART_ALREADY_EXIST.code, userId.id)
+    }
 }

@@ -6,6 +6,7 @@ import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
+import org.example.study.domain.policy.CartPolicy
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.CartService
@@ -22,7 +23,7 @@ class CartIntegrationTest: FunSpec({
     val createCartRequest = CreateCartRequest(testUserId)
 
     beforeTest {
-        cartService = CartService(CartRepository(), ItemRepository())
+        cartService = CartService(CartRepository(), ItemRepository(), CartPolicy())
     }
 
     test("장바구니 생성") {
@@ -40,7 +41,7 @@ class CartIntegrationTest: FunSpec({
 
         val response = cartService.getCartByUser(request)
 
-        with(response.cart) {
+        with(response.cart!!) {
             cartId shouldBe createdCartRes.cart.cartId
             userId shouldBe createdCartRes.cart.userId
         }

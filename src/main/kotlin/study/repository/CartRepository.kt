@@ -21,7 +21,7 @@ class CartRepository(
     private val carts: MutableMap<Ids.UserId, Cart> = mutableMapOf()
 ) {
     fun findCartByUser(dto: GetCartByUserDto): GetCartByUserVo {
-        val target = carts.get(dto.userId) ?: throw RuntimeException("not exist cart") // temp
+        val target = carts.get(dto.userId)
         return GetCartByUserVo(target)
     }
 
