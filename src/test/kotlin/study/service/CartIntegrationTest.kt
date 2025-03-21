@@ -33,7 +33,7 @@ class CartIntegrationTest: FunSpec({
 
     test("장바구니 상품 추가") {
         val createdCartRes = cartService.create(createCartRequest)
-        val request = CreateCartItemRequest(createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+        val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
 
         val response = cartService.createCartItem(request)
 
@@ -48,10 +48,10 @@ class CartIntegrationTest: FunSpec({
 
     test("장바구니 상품 제거") {
         val createdCartRes = cartService.create(createCartRequest)
-        val createRequest = CreateCartItemRequest(createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+        val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
         val createVo = cartService.createCartItem(createRequest)
         val deleteItemIds = listOf(createVo.cartItemId)
-        val deleteRequest = DeleteCartItemsRequest(createRequest.cartId, deleteItemIds)
+        val deleteRequest = DeleteCartItemsRequest(testUserId, createRequest.cartId, deleteItemIds)
         val deleteResponse = cartService.deleteCartItems(deleteRequest)
 
         deleteResponse.cartId shouldBe deleteRequest.cartId
@@ -60,11 +60,11 @@ class CartIntegrationTest: FunSpec({
 
     test("장바구니 상품 수량 변경") {
         val createdCartRes = cartService.create(createCartRequest)
-        val createRequest = CreateCartItemRequest(createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+        val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
         val createVo = cartService.createCartItem(createRequest)
 
         val updateCnt = 2
-        val updateRequest = UpdateCartItemRequest(createRequest.cartId, createVo.cartItemId, updateCnt)
+        val updateRequest = UpdateCartItemRequest(testUserId, createRequest.cartId, createVo.cartItemId, updateCnt)
 
         val updateResponse = cartService.updateCartItem(updateRequest)
 

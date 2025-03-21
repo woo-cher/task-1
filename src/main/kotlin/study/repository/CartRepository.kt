@@ -33,22 +33,24 @@ class CartRepository(
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {
         val cartItem = CartItem(Ids.CartItemId(cartItemNum), dto.cartId, dto.itemId, dto.price, dto.cnt, ShippingStatus.NONE)
 
-        val target = carts.getOrPut(cartItem.cartId) { mutableListOf() }
-        target.add(cartItem)
+        val target = cartszz.get(dto.userId) ?: throw RuntimeException("not exist cart") // temp
+        target.cartItems.add(cartItem)
 
-        val created = target.first { it.itemId == cartItem.itemId }
+        val created = target.cartItems.first { it.itemId == cartItem.itemId }
         cartItemNum = Ids.autoIncrement(cartItemNum)
 
         return CreateCartItemVo(created.cartId, created.cartItemId, created.cnt)
     }
 
     fun deleteCartItems(dto: DeleteCartItemsDto): DeleteCartItemsVo {
-        carts[dto.cartId]?.removeAll { it.cartItemId in dto.cartItemIds }
-        return DeleteCartItemsVo(dto.cartId, carts.getOrPut(dto.cartId) { mutableListOf() })
+        val cart = cartszz[dto.userId] ?: throw RuntimeException("not exist cart") // temp
+        cart.cartItems.removeAll { it.cartItemId in dto.cartItemIds }
+        return DeleteCartItemsVo(dto.cartId, cart.cartItems)
     }
 
     fun updateCartItem(dto: UpdateCartItemDto): UpdateCartItemVo {
-        val target = carts.getOrDefault(dto.cartId, ArrayList()).first { it.cartItemId == dto.cartItemId }
+        val cart = cartszz.get(dto.userId) ?: throw RuntimeException("not exist cart") // temp
+        val target = cart.cartItems.first { it.cartItemId == dto.cartItemId }
         target.cnt = dto.cnt
 
         return UpdateCartItemVo(dto.cartId, dto.cartItemId, target.cnt)

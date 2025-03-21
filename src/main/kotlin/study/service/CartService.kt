@@ -44,8 +44,8 @@ class CartService(
     }
 
     private fun CreateCartRequest.toDto() = CreateCartDto(userId)
-    private fun CreateCartItemRequest.toDto(price: Long) = CreateCartItemDto(cartId, itemId, price, cnt)
-    private fun DeleteCartItemsRequest.toDto() = DeleteCartItemsDto(cartId, cartItemIds)
-    private fun UpdateCartItemRequest.toDto() = UpdateCartItemDto(cartId, cartItemId, cnt)
+    private fun CreateCartItemRequest.toDto(price: Long) = CreateCartItemDto(userId, cartId, itemId, price, cnt)
+    private fun DeleteCartItemsRequest.toDto() = DeleteCartItemsDto(userId, cartId, cartItemIds)
+    private fun UpdateCartItemRequest.toDto() = UpdateCartItemDto(userId, cartId, cartItemId, cnt)
     private fun getItem(itemId: Ids.ItemId) = itemRepository.findById(GetItemDto(itemId))
 }

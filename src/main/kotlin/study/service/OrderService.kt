@@ -22,6 +22,6 @@ class OrderService(
     private fun calculatePrice(cartItems: List<CartItem>) = cartItems.sumOf { it.price * it.cnt }
     private fun CreateOrderRequest.deleteCartItems() {
         val cartItemIds = cartItems.map { it.cartItemId }.toList()
-        cartRepository.deleteCartItems(DeleteCartItemsDto(cartId, cartItemIds))
+        cartRepository.deleteCartItems(DeleteCartItemsDto(userId, cartId, cartItemIds))
     }
 }
