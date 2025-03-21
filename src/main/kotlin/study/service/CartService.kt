@@ -4,12 +4,15 @@ import org.example.study.domain.id.Ids
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.cart.dto.CreateCartDto
+import org.example.study.repository.cart.dto.GetCartByUserDto
 import org.example.study.repository.cart_item.dto.CreateCartItemDto
 import org.example.study.repository.cart_item.dto.DeleteCartItemsDto
 import org.example.study.repository.cart_item.dto.UpdateCartItemDto
 import org.example.study.repository.item.dto.GetItemDto
 import org.example.study.service.cart.request.CreateCartRequest
+import org.example.study.service.cart.request.GetCartByUserRequest
 import org.example.study.service.cart.response.CreateCartResponse
+import org.example.study.service.cart.response.GetCartByUserResponse
 import org.example.study.service.cart_item.request.CreateCartItemRequest
 import org.example.study.service.cart_item.request.DeleteCartItemsRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
@@ -21,7 +24,6 @@ class CartService(
     private val cartRepository: CartRepository,
     private val itemRepository: ItemRepository
 ) {
-
     fun create(req: CreateCartRequest): CreateCartResponse {
         val created = cartRepository.createCart(req.toDto())
         return CreateCartResponse(created.cart)
@@ -43,9 +45,16 @@ class CartService(
         return UpdateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
     }
 
+    fun getCartByUser(req: GetCartByUserRequest): GetCartByUserResponse {
+        val vo = cartRepository.findCartByUser(req.toDto())
+        return GetCartByUserResponse(vo.cart)
+    }
+
     private fun CreateCartRequest.toDto() = CreateCartDto(userId)
     private fun CreateCartItemRequest.toDto(price: Long) = CreateCartItemDto(userId, cartId, itemId, price, cnt)
     private fun DeleteCartItemsRequest.toDto() = DeleteCartItemsDto(userId, cartId, cartItemIds)
     private fun UpdateCartItemRequest.toDto() = UpdateCartItemDto(userId, cartId, cartItemId, cnt)
+    private fun GetCartByUserRequest.toDto() = GetCartByUserDto(userId)
+
     private fun getItem(itemId: Ids.ItemId) = itemRepository.findById(GetItemDto(itemId))
 }

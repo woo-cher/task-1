@@ -1,9 +1,11 @@
 import io.kotest.core.annotation.DisplayName
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 @DisplayName("메인 테스트")
+@Ignored
 class KoTestExample : DescribeSpec({
     describe("샘플 테스트") {
         val s = 1

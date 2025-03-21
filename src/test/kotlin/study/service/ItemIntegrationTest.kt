@@ -1,6 +1,7 @@
 package study.service
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -8,6 +9,7 @@ import org.example.study.domain.id.Ids
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.item.dto.GetItemDto
 
+@DisplayName("상품 통합 테스트")
 class ItemIntegrationTest: DescribeSpec({
     val itemRepository = ItemRepository()
 

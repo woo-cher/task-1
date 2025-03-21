@@ -1,5 +1,6 @@
 package study.service
 
+import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -9,10 +10,12 @@ import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.CartService
 import org.example.study.service.cart.request.CreateCartRequest
+import org.example.study.service.cart.request.GetCartByUserRequest
 import org.example.study.service.cart_item.request.CreateCartItemRequest
 import org.example.study.service.cart_item.request.DeleteCartItemsRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
 
+@DisplayName("장바구니 통합 테스트")
 class CartIntegrationTest: FunSpec({
     lateinit var cartService: CartService
     val testUserId = Ids.UserId("testUser")
@@ -23,11 +26,23 @@ class CartIntegrationTest: FunSpec({
     }
 
     test("장바구니 생성") {
-        val created = cartService.create(createCartRequest)
-        println("created : $created")
+        val createdCartRes = cartService.create(createCartRequest)
+        println("created : $createdCartRes")
 
-        with(created) {
+        with(createdCartRes) {
             cart.userId shouldBe testUserId
+        }
+    }
+
+    test("장바구니 사용자 ID로 조회") {
+        val createdCartRes = cartService.create(createCartRequest)
+        val request = GetCartByUserRequest(testUserId)
+
+        val response = cartService.getCartByUser(request)
+
+        with(response.cart) {
+            cartId shouldBe createdCartRes.cart.cartId
+            userId shouldBe createdCartRes.cart.userId
         }
     }
 
