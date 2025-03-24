@@ -13,7 +13,7 @@ class ItemRepository(
     private val error: TaskErrors = TaskErrors.ITEM_NOT_FOUND
 ) {
     fun findById(dto: GetItemDto): GetItemVo {
-        val dbItem = items[dto.itemId] ?: throw ItemNotFoundException(error.code, error.messageWith(dto.itemId))
+        val dbItem = items[dto.itemId] ?: throw ItemNotFoundException(error.code, error.messageWith(dto.itemId.id))
         return GetItemVo(dbItem.itemId, dbItem.name, dbItem.price, dbItem.fee)
     }
 }

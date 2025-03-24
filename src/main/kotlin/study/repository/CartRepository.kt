@@ -4,6 +4,8 @@ import org.example.study.domain.entity.Cart
 import org.example.study.domain.entity.CartItem
 import org.example.study.domain.enums.ShippingStatus
 import org.example.study.domain.id.Ids
+import org.example.study.exception.CartNotFoundException
+import org.example.study.exception.errors.TaskErrors
 import org.example.study.repository.cart.dto.CreateCartDto
 import org.example.study.repository.cart.dto.GetCartByUserDto
 import org.example.study.repository.cart.vo.CreateCartVo
@@ -18,7 +20,8 @@ import org.example.study.repository.cart_item.vo.UpdateCartItemVo
 class CartRepository(
     private var cartNum: Long = 1L,
     private var cartItemNum: Long = 1L,
-    private val carts: MutableMap<Ids.UserId, Cart> = mutableMapOf()
+    private val carts: MutableMap<Ids.UserId, Cart> = mutableMapOf(),
+    private val error: TaskErrors = TaskErrors.CART_NOT_FOUND
 ) {
     fun findCartByUser(dto: GetCartByUserDto): GetCartByUserVo {
         val target = carts.get(dto.userId)
@@ -38,7 +41,7 @@ class CartRepository(
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {
         val cartItem = CartItem(Ids.CartItemId(cartItemNum), dto.cartId, dto.itemId, dto.price, dto.cnt, ShippingStatus.NONE)
 
-        val target = carts.get(dto.userId) ?: throw RuntimeException("not exist cart") // temp
+        val target = carts.get(dto.userId) ?: throw cartNotFoundException(dto.userId)
         target.cartItems.add(cartItem)
 
         val created = target.cartItems.first { it.itemId == cartItem.itemId }
@@ -60,4 +63,6 @@ class CartRepository(
 
         return UpdateCartItemVo(dto.cartId, dto.cartItemId, target.cnt)
     }
+
+    private fun cartNotFoundException(userId: Ids.UserId) = CartNotFoundException(error.code, error.messageWith(userId.id))
 }

@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
+import org.example.study.exception.ItemNotFoundException
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.item.dto.GetItemDto
 
@@ -33,7 +34,7 @@ class ItemIntegrationTest: DescribeSpec({
             it("상품 조회 실패 - not found") {
                 val notFoundId = Ids.ItemId(20L)
                 val dto = GetItemDto(notFoundId)
-                shouldThrow<IllegalArgumentException> {
+                shouldThrow<ItemNotFoundException> {
                     itemRepository.findById(dto)
                 }
             }

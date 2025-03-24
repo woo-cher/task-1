@@ -1,5 +1,6 @@
 package study.service
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
@@ -9,7 +10,9 @@ import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
 import org.example.study.exception.CartAlreadyExistException
+import org.example.study.exception.CartNotFoundException
 import org.example.study.exception.ItemNotFoundException
+import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.CartService
@@ -71,24 +74,34 @@ class CartIntegrationTest: DescribeSpec({
                 val createdCartRes = cartService.create(createCartRequest)
                 val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
 
-                val response = cartService.createCartItem(request)
+                shouldNotThrow<TaskException> {
+                    val response = cartService.createCartItem(request)
+                    println("created : $response")
 
-                println("created : $response")
-
-                with(response) {
-                    shouldNotBeNull()
-                    cartId shouldBe request.cartId
-                    cnt shouldBe request.cnt
+                    with(response) {
+                        shouldNotBeNull()
+                        cartId shouldBe request.cartId
+                        cnt shouldBe request.cnt
+                    }
                 }
             }
         }
         context("실패 케이스") {
-            it("장바구니 상품 추가 실패 - 존재하지 않는 상품 ID") {
+            it("추가 실패 - 존재하지 않는 상품 ID") {
                 val createdCartRes = cartService.create(createCartRequest)
                 val notFoundItemId = Ids.ItemId(1000L)
                 val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, notFoundItemId, 1)
 
                 shouldThrow<ItemNotFoundException> {
+                    cartService.createCartItem(request)
+                }
+            }
+            it("추가 실패 - 존재하지 않는 장바구니 ID") {
+                val createdCartRes = cartService.create(createCartRequest)
+                val invalidUser = Ids.UserId("nothing")
+                val request = CreateCartItemRequest(invalidUser, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+
+                shouldThrow<CartNotFoundException> {
                     cartService.createCartItem(request)
                 }
             }
