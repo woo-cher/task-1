@@ -63,15 +63,14 @@ open class CartService(
     }
 
     fun getCartByUser(req: GetCartByUserRequest): GetCartByUserResponse {
-        val vo = cartRepository.findCartByUser(req.toDto())
-        return GetCartByUserResponse(vo.cart)
+        val cart = supplyCart(req.userId).invoke()
+        return GetCartByUserResponse(cart)
     }
 
     private fun CreateCartRequest.toDto() = CreateCartDto(userId)
     private fun CreateCartItemRequest.toDto(price: Long) = CreateCartItemDto(userId, cartId, itemId, price, cnt)
     private fun DeleteCartItemsRequest.toDto() = DeleteCartItemsDto(userId, cartId, cartItemIds)
     private fun UpdateCartItemRequest.toDto() = UpdateCartItemDto(userId, cartId, cartItemId, cnt)
-    private fun GetCartByUserRequest.toDto() = GetCartByUserDto(userId)
 
     private fun supplyCart(userId: Ids.UserId): () -> Cart? = {
         cartRepository.findCartByUser(GetCartByUserDto(userId)).cart
