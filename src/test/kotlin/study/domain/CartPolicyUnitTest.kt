@@ -19,14 +19,14 @@ class CartPolicyUnitTest: DescribeSpec({
             val cartSupplier = { null }
 
             shouldNotThrow<RuntimeException> {
-                cartPolicy.canCreateCart(cartSupplier) { _ -> throw RuntimeException() }
+                cartPolicy.validateExistsOrThrow(cartSupplier) { _ -> throw RuntimeException() }
             }
         }
         it("생성 실패 - already exist") {
             val cartSupplier = { Cart(testCartId, mutableListOf(), testUserId) }
 
             shouldThrow<RuntimeException> {
-                cartPolicy.canCreateCart(cartSupplier) { _ -> throw RuntimeException("cart already exists.") }
+                cartPolicy.validateExistsOrThrow(cartSupplier) { _ -> throw RuntimeException("cart already exists.") }
             }
         }
     }

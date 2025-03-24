@@ -4,10 +4,11 @@ import org.example.study.domain.entity.Cart
 import org.example.study.domain.id.Ids
 
 class CartPolicy {
-    fun canCreateCart(
+
+    fun validateExistsOrThrow(
         cartSupplier: () -> Cart?,
-        thrower: (Ids.UserId) -> Unit
+        thrower: ExceptionThrower<Ids.UserId>
     ) {
-        cartSupplier()?.let { thrower.invoke(it.userId) }
+        cartSupplier()?.let { thrower.invokeWith(it.userId) }
     }
 }

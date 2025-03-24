@@ -2,6 +2,7 @@ package org.example.study.service
 
 import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
+import org.example.study.domain.policy.ExceptionThrower
 import org.example.study.exception.CartAlreadyExistException
 import org.example.study.exception.errors.CartErrors
 import org.example.study.repository.CartRepository
@@ -23,6 +24,7 @@ import org.example.study.service.cart_item.response.CreateCartItemResponse
 import org.example.study.service.cart_item.response.DeleteCartItemResponse
 import org.example.study.service.cart_item.response.UpdateCartItemResponse
 
+// todo) 서비스 코드가 가지는 책임이 많아 분산해야 한다
 class CartService(
     private val cartRepository: CartRepository,
     private val itemRepository: ItemRepository,
@@ -30,7 +32,8 @@ class CartService(
 ) {
     fun create(req: CreateCartRequest): CreateCartResponse {
         val cartSupplier = { cartRepository.findCartByUser(GetCartByUserDto(req.userId)).cart }
-        cartPolicy.canCreateCart(cartSupplier, this::alreadyCartExist)
+        // todo) exception handler 필요하다
+        cartPolicy.validateExistsOrThrow(cartSupplier, this::alreadyCartExists)
 
         val created = cartRepository.createCart(req.toDto())
         return CreateCartResponse(created.cart)
@@ -65,7 +68,7 @@ class CartService(
 
     private fun getItem(itemId: Ids.ItemId) = itemRepository.findById(GetItemDto(itemId))
 
-    private fun alreadyCartExist(userId: Ids.UserId) {
+    private fun alreadyCartExists(userId: Ids.UserId) = ExceptionThrower<Ids.UserId> {
         throw CartAlreadyExistException(CartErrors.CART_ALREADY_EXIST.code, userId.id)
     }
 }
