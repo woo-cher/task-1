@@ -56,8 +56,10 @@ open class CartService(
     }
 
     fun updateCartItem(req: UpdateCartItemRequest): UpdateCartItemResponse {
-        val vo = cartRepository.updateCartItem(req.toDto())
-        return UpdateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
+        return ExceptionHandler.handle {
+            val vo = cartRepository.updateCartItem(req.toDto())
+            UpdateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
+        }
     }
 
     fun getCartByUser(req: GetCartByUserRequest): GetCartByUserResponse {

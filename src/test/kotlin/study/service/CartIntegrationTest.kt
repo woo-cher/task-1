@@ -127,7 +127,7 @@ class CartIntegrationTest: DescribeSpec({
             }
         }
         context("실패 케이스") {
-            it("제거 실패 - 존재하지 않는 장바구니 ID") {
+            it("제거 실패 - 존재하지 않는 사용자 장바구니") {
                 val notFoundCartId = Ids.CartId(1L)
                 val createRequest = CreateCartItemRequest(testUserId, notFoundCartId, Ids.ItemId(1L), 1)
 
@@ -138,20 +138,39 @@ class CartIntegrationTest: DescribeSpec({
         }
     }
 
-    it("장바구니 상품 수량 변경") {
-        val createdCartRes = cartService.create(createCartRequest)
-        val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
-        val createVo = cartService.createCartItem(createRequest)
+    describe("장바구니 상품 수량 변경") {
+        context("성공 케이스") {
+            it("수량 변경 성공") {
+                val createdCartRes = cartService.create(createCartRequest)
+                val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+                val createVo = cartService.createCartItem(createRequest)
 
-        val updateCnt = 2
-        val updateRequest = UpdateCartItemRequest(testUserId, createRequest.cartId, createVo.cartItemId, updateCnt)
+                val updateCnt = 2
+                val updateRequest = UpdateCartItemRequest(testUserId, createRequest.cartId, createVo.cartItemId, updateCnt)
 
-        val updateResponse = cartService.updateCartItem(updateRequest)
+                shouldNotThrow<TaskException> {
+                    val updateResponse = cartService.updateCartItem(updateRequest)
 
-        with(updateResponse) {
-            cartId shouldBe updateRequest.cartId
-            cartItemId shouldBe updateRequest.cartItemId
-            cnt shouldBe updateCnt
+                    with(updateResponse) {
+                        cartId shouldBe updateRequest.cartId
+                        cartItemId shouldBe updateRequest.cartItemId
+                        cnt shouldBe updateCnt
+                    }
+                }
+            }
+            it("수량 변경 실패 - 존재하지 않는 사용자 장바구니") {
+                val createdCartRes = cartService.create(createCartRequest)
+                val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+                val createVo = cartService.createCartItem(createRequest)
+
+                val invalidUser = Ids.UserId("invalid")
+                val updateCnt = 2
+                val updateRequest = UpdateCartItemRequest(invalidUser, createRequest.cartId, createVo.cartItemId, updateCnt)
+
+                shouldThrow<CartNotFoundException> {
+                    cartService.updateCartItem(updateRequest)
+                }
+            }
         }
     }
 })

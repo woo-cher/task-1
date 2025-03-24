@@ -57,7 +57,7 @@ class CartRepository(
     }
 
     fun updateCartItem(dto: UpdateCartItemDto): UpdateCartItemVo {
-        val cart = carts.get(dto.userId) ?: throw RuntimeException("not exist cart") // temp
+        val cart = carts.get(dto.userId) ?: throw cartNotFoundException(dto.userId)
         val target = cart.cartItems.first { it.cartItemId == dto.cartItemId }
         target.cnt = dto.cnt
 
