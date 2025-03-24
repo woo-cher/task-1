@@ -51,7 +51,7 @@ class CartRepository(
     }
 
     fun deleteCartItems(dto: DeleteCartItemsDto): DeleteCartItemsVo {
-        val cart = carts[dto.userId] ?: throw RuntimeException("not exist cart") // temp
+        val cart = carts[dto.userId] ?: throw cartNotFoundException(dto.userId)
         cart.cartItems.removeAll { it.cartItemId in dto.cartItemIds }
         return DeleteCartItemsVo(dto.cartId, cart.cartItems)
     }

@@ -1,6 +1,7 @@
 package org.example.study.service
 
 import org.example.study.domain.entity.CartItem
+import org.example.study.exception.ExceptionHandler
 import org.example.study.repository.CartRepository
 import org.example.study.repository.OrderRepository
 import org.example.study.repository.cart_item.dto.DeleteCartItemsDto
@@ -13,9 +14,11 @@ class OrderService(
     private val cartRepository: CartRepository
 ) {
     fun create(req: CreateOrderRequest): CreateOrderResponse {
-        val created = orderRepository.createOrder(req.toDto())
-        req.deleteCartItems()
-        return CreateOrderResponse(created.orderId, created.userId, created.cartItems, created.status, created.price)
+        return ExceptionHandler.handle {
+            val created = orderRepository.createOrder(req.toDto())
+            req.deleteCartItems()
+            CreateOrderResponse(created.orderId, created.userId, created.cartItems, created.status, created.price)
+        }
     }
 
     private fun CreateOrderRequest.toDto() = CreateOrderDto(userId, cartItems, calculatePrice(cartItems))

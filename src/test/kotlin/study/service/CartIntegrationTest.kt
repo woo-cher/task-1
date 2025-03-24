@@ -96,7 +96,7 @@ class CartIntegrationTest: DescribeSpec({
                     cartService.createCartItem(request)
                 }
             }
-            it("추가 실패 - 존재하지 않는 장바구니 ID") {
+            it("추가 실패 - 유저 ID 에 해당하는 장바구니가 없음") {
                 val createdCartRes = cartService.create(createCartRequest)
                 val invalidUser = Ids.UserId("nothing")
                 val request = CreateCartItemRequest(invalidUser, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
@@ -109,16 +109,33 @@ class CartIntegrationTest: DescribeSpec({
 
     }
 
-    it("장바구니 상품 제거") {
-        val createdCartRes = cartService.create(createCartRequest)
-        val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
-        val createVo = cartService.createCartItem(createRequest)
-        val deleteItemIds = listOf(createVo.cartItemId)
-        val deleteRequest = DeleteCartItemsRequest(testUserId, createRequest.cartId, deleteItemIds)
-        val deleteResponse = cartService.deleteCartItems(deleteRequest)
+    describe("장바구니 상품 제거") {
+        context("성공 케이스") {
+            it("장바구니 상품 제거 성공") {
+                val createdCartRes = cartService.create(createCartRequest)
+                val createRequest = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+                val createVo = cartService.createCartItem(createRequest)
+                val deleteItemIds = listOf(createVo.cartItemId)
+                val deleteRequest = DeleteCartItemsRequest(testUserId, createRequest.cartId, deleteItemIds)
 
-        deleteResponse.cartId shouldBe deleteRequest.cartId
-        deleteResponse.cartItems shouldNotContainAnyOf deleteItemIds
+                shouldNotThrow<TaskException> {
+                    val deleteResponse = cartService.deleteCartItems(deleteRequest)
+
+                    deleteResponse.cartId shouldBe deleteRequest.cartId
+                    deleteResponse.cartItems shouldNotContainAnyOf deleteItemIds
+                }
+            }
+        }
+        context("실패 케이스") {
+            it("제거 실패 - 존재하지 않는 장바구니 ID") {
+                val notFoundCartId = Ids.CartId(1L)
+                val createRequest = CreateCartItemRequest(testUserId, notFoundCartId, Ids.ItemId(1L), 1)
+
+                shouldThrow<CartNotFoundException> {
+                    cartService.createCartItem(createRequest)
+                }
+            }
+        }
     }
 
     it("장바구니 상품 수량 변경") {

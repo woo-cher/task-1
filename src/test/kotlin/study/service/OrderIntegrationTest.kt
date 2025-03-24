@@ -1,13 +1,17 @@
 package study.service
 
+import io.kotest.assertions.throwables.shouldNotThrow
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.enums.OrderStatus
 import org.example.study.domain.id.Ids
+import org.example.study.exception.CartNotFoundException
+import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
 import org.example.study.repository.OrderRepository
 import org.example.study.repository.cart.dto.CreateCartDto
@@ -18,7 +22,7 @@ import study.generator.TestCartItemGenerator
 import study.generator.TestItemGenerator
 
 @DisplayName("주문 통합 테스트")
-class OrderIntegrationTest: FunSpec({
+class OrderIntegrationTest: DescribeSpec({
     lateinit var orderService: OrderService
     val cartRepository = CartRepository()
 
@@ -38,20 +42,35 @@ class OrderIntegrationTest: FunSpec({
         orderService = OrderService(OrderRepository(), cartRepository)
     }
 
-    test("주문 생성") {
-        val request = CreateOrderRequest(testUser, testCart, cartItems)
-        val response = orderService.create(request)
+    describe("주문 생성") {
+        context("성공 케이스") {
+            it("주문 생성 성공") {
+                val request = CreateOrderRequest(testUser, testCart, cartItems)
 
-        println("created: $response")
+                shouldNotThrow<TaskException> {
+                    val response = orderService.create(request)
+                    println("created: $response")
 
-        with(response) {
-            cartItems.shouldNotBeEmpty()
-            userId shouldBe testUser
-            status shouldBe OrderStatus.PROCESSED
+                    with(response) {
+                        cartItems.shouldNotBeEmpty()
+                        userId shouldBe testUser
+                        status shouldBe OrderStatus.PROCESSED
+                    }
+                    with(response.cartItems) {
+                        shouldForAll { it.cartId shouldBe testCart }
+                    }
+                }
+            }
         }
+        context("실패 케이스") {
+            it("주문 생성 실패 - 유저 ID 에 해당하는 장바구니가 없음") {
+                val invalidUser = Ids.UserId("invalidUser")
+                val request = CreateOrderRequest(invalidUser, testCart, cartItems)
 
-        with(response.cartItems) {
-            shouldForAll { it.cartId shouldBe testCart }
+                shouldThrow<CartNotFoundException> {
+                    orderService.create(request)
+                }
+            }
         }
     }
 })

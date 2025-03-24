@@ -49,8 +49,10 @@ open class CartService(
     }
 
     fun deleteCartItems(req: DeleteCartItemsRequest): DeleteCartItemResponse {
-        val vo = cartRepository.deleteCartItems(req.toDto())
-        return DeleteCartItemResponse(vo.cartIds, vo.cartItems)
+        return ExceptionHandler.handle {
+            val vo = cartRepository.deleteCartItems(req.toDto())
+            DeleteCartItemResponse(vo.cartIds, vo.cartItems)
+        }
     }
 
     fun updateCartItem(req: UpdateCartItemRequest): UpdateCartItemResponse {
