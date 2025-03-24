@@ -1,6 +1,6 @@
 package org.example.study.exception
 
-class CartAlreadyExistException(
+class ItemNotFoundException(
     errorCode: Int,
     errorMessage: String
 ): TaskException(errorCode, errorMessage)

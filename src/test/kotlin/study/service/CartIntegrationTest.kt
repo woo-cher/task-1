@@ -9,6 +9,7 @@ import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
 import org.example.study.exception.CartAlreadyExistException
+import org.example.study.exception.ItemNotFoundException
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.CartService
@@ -64,19 +65,35 @@ class CartIntegrationTest: DescribeSpec({
         }
     }
 
-    it("장바구니 상품 추가") {
-        val createdCartRes = cartService.create(createCartRequest)
-        val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
+    describe("장바구니 상품 추가") {
+        context("성공 케이스") {
+            it("장바구니 상품 추가 성공") {
+                val createdCartRes = cartService.create(createCartRequest)
+                val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
 
-        val response = cartService.createCartItem(request)
+                val response = cartService.createCartItem(request)
 
-        println("created : $response")
+                println("created : $response")
 
-        with(response) {
-            shouldNotBeNull()
-            cartId shouldBe request.cartId
-            cnt shouldBe request.cnt
+                with(response) {
+                    shouldNotBeNull()
+                    cartId shouldBe request.cartId
+                    cnt shouldBe request.cnt
+                }
+            }
         }
+        context("실패 케이스") {
+            it("장바구니 상품 추가 실패 - 존재하지 않는 상품 ID") {
+                val createdCartRes = cartService.create(createCartRequest)
+                val notFoundItemId = Ids.ItemId(1000L)
+                val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, notFoundItemId, 1)
+
+                shouldThrow<ItemNotFoundException> {
+                    cartService.createCartItem(request)
+                }
+            }
+        }
+
     }
 
     it("장바구니 상품 제거") {

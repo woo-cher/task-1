@@ -4,7 +4,7 @@ object ExceptionHandler {
     inline fun <T> handle(block: () -> T): T {
         return try {
             block()
-        } catch (e: CartAlreadyExistException) {
+        } catch (e: TaskException) {
             println(e.toErrorResponse())
             throw e
         }

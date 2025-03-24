@@ -6,7 +6,7 @@ import org.example.study.domain.policy.CartPolicy
 import org.example.study.domain.policy.ExceptionThrower
 import org.example.study.exception.CartAlreadyExistException
 import org.example.study.exception.ExceptionHandler
-import org.example.study.exception.errors.CartErrors
+import org.example.study.exception.errors.TaskErrors
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.cart.dto.CreateCartDto
@@ -41,9 +41,11 @@ open class CartService(
     }
 
     fun createCartItem(req: CreateCartItemRequest): CreateCartItemResponse {
-        val item = getItem(req.itemId)
-        val vo = cartRepository.createCartItem(req.toDto(item.price))
-        return CreateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
+        return ExceptionHandler.handle {
+            val item = getItem(req.itemId)
+            val vo = cartRepository.createCartItem(req.toDto(item.price))
+            CreateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
+        }
     }
 
     fun deleteCartItems(req: DeleteCartItemsRequest): DeleteCartItemResponse {
@@ -73,7 +75,7 @@ open class CartService(
     private fun getItem(itemId: Ids.ItemId) = itemRepository.findById(GetItemDto(itemId))
 
     private val alreadyCartExists = ExceptionThrower<Ids.UserId> { userId ->
-        val error = CartErrors.CART_ALREADY_EXIST
+        val error = TaskErrors.CART_ALREADY_EXIST
         throw CartAlreadyExistException(error.code, error.messageWith(userId.id))
     }
 }
