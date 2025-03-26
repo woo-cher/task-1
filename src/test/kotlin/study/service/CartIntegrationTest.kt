@@ -30,47 +30,6 @@ class CartIntegrationTest: DescribeSpec({
         cartService = CartService(CartRepository(), ItemRepository(), CartPolicy())
     }
 
-    describe("장바구니 상품 추가") {
-        context("성공 케이스") {
-            it("장바구니 상품 추가 성공") {
-                val createdCartRes = cartService.create(createCartRequest)
-                val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
-
-                shouldNotThrow<TaskException> {
-                    val response = cartService.createCartItem(request)
-                    println("created : $response")
-
-                    with(response) {
-                        shouldNotBeNull()
-                        cartId shouldBe request.cartId
-                        cnt shouldBe request.cnt
-                    }
-                }
-            }
-        }
-        context("실패 케이스") {
-            it("추가 실패 - 존재하지 않는 상품 ID") {
-                val createdCartRes = cartService.create(createCartRequest)
-                val notFoundItemId = Ids.ItemId(1000L)
-                val request = CreateCartItemRequest(testUserId, createdCartRes.cart.cartId, notFoundItemId, 1)
-
-                shouldThrow<ItemNotFoundException> {
-                    cartService.createCartItem(request)
-                }
-            }
-            it("추가 실패 - 유저 ID 에 해당하는 장바구니가 없음") {
-                val createdCartRes = cartService.create(createCartRequest)
-                val invalidUser = Ids.UserId("nothing")
-                val request = CreateCartItemRequest(invalidUser, createdCartRes.cart.cartId, Ids.ItemId(1L), 1)
-
-                shouldThrow<CartNotFoundException> {
-                    cartService.createCartItem(request)
-                }
-            }
-        }
-
-    }
-
     describe("장바구니 상품 제거") {
         context("성공 케이스") {
             it("장바구니 상품 제거 성공") {

@@ -25,12 +25,12 @@ import org.example.study.service.cart_item.response.DeleteCartItemResponse
 import org.example.study.service.cart_item.response.UpdateCartItemResponse
 
 // todo) 서비스 코드가 가지는 책임이 많아 분산해야 한다
+@Deprecated("useCase 로 분리 후 제거")
 class CartService(
     private val cartRepository: CartRepository,
     private val itemRepository: ItemRepository,
     private val cartPolicy: CartPolicy
 ) {
-    @Deprecated("useCase 로 분리 후 제거")
     fun create(req: CreateCartRequest): CreateCartResponse {
         return ExceptionHandler.handle {
             cartPolicy.validateExistsOrThrow(supplyCart(req.userId), alreadyCartExists)
