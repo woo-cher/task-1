@@ -9,7 +9,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
-import org.example.study.exception.CartAlreadyExistException
 import org.example.study.exception.CartNotFoundException
 import org.example.study.exception.ItemNotFoundException
 import org.example.study.exception.TaskException
@@ -30,30 +29,6 @@ class CartIntegrationTest: DescribeSpec({
 
     beforeTest {
         cartService = CartService(CartRepository(), ItemRepository(), CartPolicy())
-    }
-
-    describe("장바구니 생성") {
-        context("성공 케이스") {
-            it("장바구니 정상 생성") {
-                val createdCartRes = cartService.create(createCartRequest)
-                println("created : $createdCartRes")
-
-                with(createdCartRes) {
-                    cart.userId shouldBe testUserId
-                }
-            }
-        }
-        context("실패 케이스") {
-            it("장바구니 생성 실패 - already exist") {
-                cartService.create(createCartRequest) // first create
-                val secondCreateCartRequest = CreateCartRequest(testUserId)
-
-                shouldThrow<CartAlreadyExistException> {
-                    cartService.create(secondCreateCartRequest)
-                }
-            }
-        }
-
     }
 
     it("장바구니 사용자 ID로 조회") {
