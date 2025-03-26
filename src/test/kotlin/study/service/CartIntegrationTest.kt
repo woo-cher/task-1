@@ -16,7 +16,6 @@ import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.CartService
 import org.example.study.service.cart.request.CreateCartRequest
-import org.example.study.service.cart.request.GetCartByUserRequest
 import org.example.study.service.cart_item.request.CreateCartItemRequest
 import org.example.study.service.cart_item.request.DeleteCartItemsRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
@@ -29,18 +28,6 @@ class CartIntegrationTest: DescribeSpec({
 
     beforeTest {
         cartService = CartService(CartRepository(), ItemRepository(), CartPolicy())
-    }
-
-    it("장바구니 사용자 ID로 조회") {
-        val createdCartRes = cartService.create(createCartRequest)
-        val request = GetCartByUserRequest(testUserId)
-
-        val response = cartService.getCartByUser(request)
-
-        with(response.cart!!) {
-            cartId shouldBe createdCartRes.cart.cartId
-            userId shouldBe createdCartRes.cart.userId
-        }
     }
 
     describe("장바구니 상품 추가") {

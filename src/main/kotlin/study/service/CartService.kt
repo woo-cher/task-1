@@ -16,9 +16,7 @@ import org.example.study.repository.cart_item.dto.DeleteCartItemsDto
 import org.example.study.repository.cart_item.dto.UpdateCartItemDto
 import org.example.study.repository.item.dto.GetItemDto
 import org.example.study.service.cart.request.CreateCartRequest
-import org.example.study.service.cart.request.GetCartByUserRequest
 import org.example.study.service.cart.response.CreateCartResponse
-import org.example.study.service.cart.response.GetCartByUserResponse
 import org.example.study.service.cart_item.request.CreateCartItemRequest
 import org.example.study.service.cart_item.request.DeleteCartItemsRequest
 import org.example.study.service.cart_item.request.UpdateCartItemRequest
@@ -61,11 +59,6 @@ class CartService(
             val vo = cartRepository.updateCartItem(req.toDto())
             UpdateCartItemResponse(vo.cartId, vo.cartItemId, vo.cnt)
         }
-    }
-
-    fun getCartByUser(req: GetCartByUserRequest): GetCartByUserResponse {
-        val cart = supplyCart(req.userId).invoke()
-        return GetCartByUserResponse(cart)
     }
 
     private fun CreateCartRequest.toDto() = CreateCartDto(userId)
