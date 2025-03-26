@@ -26,7 +26,7 @@ class CartIntegrationTests: DescribeSpec({
     val testUserId = Ids.UserId("testUser")
     val createInMsg = CreateCartInMessage(testUserId)
 
-    beforeTest {
+    beforeEach {
         val cartRepository = CartRepository()
         val cartPolicy = CartPolicy()
 
