@@ -5,10 +5,11 @@ import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import org.example.study.domain.id.Ids
 import org.example.study.exception.ItemNotFoundException
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.item.dto.GetItemDto
+import study.generator.TestFactory
+import study.generator.TestFactory.toItemId
 
 @DisplayName("상품 통합 테스트")
 class ItemIntegrationTest: DescribeSpec({
@@ -17,11 +18,9 @@ class ItemIntegrationTest: DescribeSpec({
     describe("상품 조회") {
         context("성공 케이스") {
             it("상품 ID 로 조회 가능") {
-                val nonNullableItemId = Ids.ItemId(1L)
+                val nonNullableItemId = TestFactory.START_ID.toItemId()
                 val dto = GetItemDto(nonNullableItemId)
                 val dbItem = itemRepository.findById(dto)
-
-                println("dbItem : $dbItem")
 
                 with(dbItem) {
                     shouldNotBeNull()
@@ -32,8 +31,9 @@ class ItemIntegrationTest: DescribeSpec({
 
         context("실패 케이스") {
             it("상품 조회 실패 - not found") {
-                val notFoundId = Ids.ItemId(20L)
+                val notFoundId = TestFactory.invalidId().toItemId()
                 val dto = GetItemDto(notFoundId)
+
                 shouldThrow<ItemNotFoundException> {
                     itemRepository.findById(dto)
                 }

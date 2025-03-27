@@ -6,10 +6,10 @@ import org.example.study.exception.ItemNotFoundException
 import org.example.study.exception.errors.TaskErrors
 import org.example.study.repository.item.dto.GetItemDto
 import org.example.study.repository.item.vo.GetItemVo
-import org.example.study.service.generator.ItemGenerator
+import org.example.study.service.generator.Generator
 
 class ItemRepository(
-    private var items: Map<Ids.ItemId, Item> = ItemGenerator.generate(),
+    private var items: Map<Ids.ItemId, Item> = Generator.generateItems(),
     private val error: TaskErrors = TaskErrors.ITEM_NOT_FOUND
 ) {
     fun findById(dto: GetItemDto): GetItemVo {

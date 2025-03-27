@@ -16,10 +16,11 @@ import org.example.study.repository.cart_item.dto.UpdateCartItemDto
 import org.example.study.repository.cart_item.vo.CreateCartItemVo
 import org.example.study.repository.cart_item.vo.DeleteCartItemsVo
 import org.example.study.repository.cart_item.vo.UpdateCartItemVo
+import org.example.study.service.generator.Generator
 
 class CartRepository(
-    private var cartNum: Long = 1L,
-    private var cartItemNum: Long = 1L,
+    private var cartNum: Long = Generator.startId(),
+    private var cartItemNum: Long = Generator.startId(),
     private val carts: MutableMap<Ids.UserId, Cart> = mutableMapOf(),
     private val error: TaskErrors = TaskErrors.CART_NOT_FOUND
 ) {

@@ -5,33 +5,29 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
 import org.example.study.exception.CartAlreadyExistException
 import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
 import org.example.study.usecase.CartUseCases
-import org.example.study.usecase.cart.CreateCartUseCase
-import org.example.study.usecase.cart.GetCartByUserIdUseCase
 import org.example.study.usecase.cart.in_msg.CreateCartInMessage
 import org.example.study.usecase.cart.in_msg.GetCartByUserInMessage
 import org.example.study.usecase.cart.out_msg.CreateCartOutMessage
 import org.example.study.usecase.cart.out_msg.GetCartByUserOutMessage
+import study.generator.TestFactory
 
 @DisplayName("장바구니 통합 테스트")
 class CartIntegrationTests: DescribeSpec({
     lateinit var createCartUseCase: CartUseCases.CreateCartUseCase<CreateCartInMessage, CreateCartOutMessage>
     lateinit var getCartUseCase: CartUseCases.GetCartUseCase<GetCartByUserInMessage, GetCartByUserOutMessage>
 
-    val testUserId = Ids.UserId("testUser")
-    val createInMsg = CreateCartInMessage(testUserId)
+    val createInMsg = CreateCartInMessage(TestFactory.testUser)
 
     beforeEach {
         val cartRepository = CartRepository()
-        val cartPolicy = CartPolicy()
-
-        createCartUseCase = CreateCartUseCase(cartRepository, cartPolicy)
-        getCartUseCase = GetCartByUserIdUseCase(cartRepository)
+        val cartPolicy = TestFactory.cartPolicy()
+        createCartUseCase = TestFactory.createCartUseCase(cartRepository, cartPolicy)
+        getCartUseCase = TestFactory.getCartUseCase(cartRepository)
     }
 
     describe("장바구니 생성") {
@@ -41,7 +37,7 @@ class CartIntegrationTests: DescribeSpec({
                     val outMsg = createCartUseCase.create(createInMsg)
 
                     with(outMsg) {
-                        cart.userId shouldBe testUserId
+                        cart.userId shouldBe TestFactory.testUser
                     }
                 }
             }
@@ -51,7 +47,7 @@ class CartIntegrationTests: DescribeSpec({
                 createCartUseCase.create(createInMsg) // first create
 
                 shouldThrow<CartAlreadyExistException> {
-                    val secondCreateInMsg = CreateCartInMessage(testUserId)
+                    val secondCreateInMsg = CreateCartInMessage(TestFactory.testUser)
                     createCartUseCase.create(secondCreateInMsg)
                 }
             }
@@ -60,7 +56,7 @@ class CartIntegrationTests: DescribeSpec({
 
     it("장바구니 사용자 ID로 조회") {
         val createdCartRes = createCartUseCase.create(createInMsg)
-        val inMsg = GetCartByUserInMessage(testUserId)
+        val inMsg = GetCartByUserInMessage(TestFactory.testUser)
 
         shouldNotThrow<TaskException> {
             val response = getCartUseCase.get(inMsg)
