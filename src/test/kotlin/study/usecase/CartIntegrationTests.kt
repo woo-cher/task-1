@@ -5,7 +5,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import org.example.study.domain.policy.CartPolicy
 import org.example.study.exception.CartAlreadyExistException
 import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
