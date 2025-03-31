@@ -29,11 +29,11 @@ import study.generator.TestFactory.toItemId
 @DisplayName("장바구니 상품 통합 테스트")
 class CartItemIntegrationTests: DescribeSpec({
     lateinit var createdCart: Cart
-    lateinit var createCartUseCase: CartUseCases.CreateCartUseCase<CreateCartInMessage, CreateCartOutMessage>
+    lateinit var createCartUseCase: CartUseCases.Create<CreateCartInMessage, CreateCartOutMessage>
 
-    lateinit var createUseCase: CartItemUseCases.CreateCartItemUseCase<CreateCartItemInMessage, CreateCartItemOutMessage>
-    lateinit var deleteUseCase: CartItemUseCases.DeleteCartItemsUseCase<DeleteCartItemsInMessage, DeleteCartItemsOutMessage>
-    lateinit var updateUseCase: CartItemUseCases.UpdateCartItemUseCase<UpdateCartItemInMessage, UpdateCartItemOutMessage>
+    lateinit var createUseCase: CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage>
+    lateinit var deleteUseCase: CartItemUseCases.Delete<DeleteCartItemsInMessage, DeleteCartItemsOutMessage>
+    lateinit var updateUseCase: CartItemUseCases.Update<UpdateCartItemInMessage, UpdateCartItemOutMessage>
 
     beforeEach {
         val cartRepository = CartRepository()

@@ -9,7 +9,7 @@ import org.example.study.usecase.cart.out_msg.GetCartByUserOutMessage
 
 class GetCartByUserIdUseCase(
     private val cartRepository: CartRepository
-): CartUseCases.GetCartUseCase<GetCartByUserInMessage, GetCartByUserOutMessage> {
+): CartUseCases.Get<GetCartByUserInMessage, GetCartByUserOutMessage> {
 
     override fun get(inMsg: GetCartByUserInMessage): GetCartByUserOutMessage = inMsg.getCart().toOutMsg()
 

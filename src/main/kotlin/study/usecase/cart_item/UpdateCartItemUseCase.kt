@@ -10,7 +10,7 @@ import org.example.study.usecase.cart_item.out_msg.UpdateCartItemOutMessage
 
 class UpdateCartItemUseCase(
     private val cartRepository: CartRepository
-): CartItemUseCases.UpdateCartItemUseCase<UpdateCartItemInMessage, UpdateCartItemOutMessage> {
+): CartItemUseCases.Update<UpdateCartItemInMessage, UpdateCartItemOutMessage> {
 
     override fun update(inMsg: UpdateCartItemInMessage): UpdateCartItemOutMessage = ExceptionHandler.handle {
         cartRepository.updateCartItem(inMsg.toDto()).toOutMsg()

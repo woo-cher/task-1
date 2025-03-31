@@ -10,7 +10,7 @@ import org.example.study.usecase.cart_item.out_msg.DeleteCartItemsOutMessage
 
 class DeleteCartItemsUseCase(
     private val cartRepository: CartRepository
-): CartItemUseCases.DeleteCartItemsUseCase<DeleteCartItemsInMessage, DeleteCartItemsOutMessage> {
+): CartItemUseCases.Delete<DeleteCartItemsInMessage, DeleteCartItemsOutMessage> {
 
     override fun delete(inMsg: DeleteCartItemsInMessage): DeleteCartItemsOutMessage = ExceptionHandler.handle {
         cartRepository.deleteCartItems(inMsg.toDto()).toOutMsg()

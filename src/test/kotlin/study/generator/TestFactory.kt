@@ -37,19 +37,19 @@ object TestFactory {
 
     fun cartPolicy() = CartPolicy()
 
-    fun createCartUseCase(cartRepository: CartRepository, cartPolicy: CartPolicy): CartUseCases.CreateCartUseCase<CreateCartInMessage, CreateCartOutMessage> =
+    fun createCartUseCase(cartRepository: CartRepository, cartPolicy: CartPolicy): CartUseCases.Create<CreateCartInMessage, CreateCartOutMessage> =
         CreateCartUseCase(cartRepository, cartPolicy)
 
-    fun getCartUseCase(cartRepository: CartRepository): CartUseCases.GetCartUseCase<GetCartByUserInMessage, GetCartByUserOutMessage> =
+    fun getCartUseCase(cartRepository: CartRepository): CartUseCases.Get<GetCartByUserInMessage, GetCartByUserOutMessage> =
         GetCartByUserIdUseCase(cartRepository)
 
-    fun createCartItemUseCase(cartRepository: CartRepository, itemRepository: ItemRepository): CartItemUseCases.CreateCartItemUseCase<CreateCartItemInMessage, CreateCartItemOutMessage> =
+    fun createCartItemUseCase(cartRepository: CartRepository, itemRepository: ItemRepository): CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage> =
         CreateCartItemUseCase(cartRepository, itemRepository)
 
-    fun deleteCartItemUseCase(cartRepository: CartRepository): CartItemUseCases.DeleteCartItemsUseCase<DeleteCartItemsInMessage, DeleteCartItemsOutMessage> =
+    fun deleteCartItemUseCase(cartRepository: CartRepository): CartItemUseCases.Delete<DeleteCartItemsInMessage, DeleteCartItemsOutMessage> =
         DeleteCartItemsUseCase(cartRepository)
 
-    fun updateCartItemUseCase(cartRepository: CartRepository): CartItemUseCases.UpdateCartItemUseCase<UpdateCartItemInMessage, UpdateCartItemOutMessage> =
+    fun updateCartItemUseCase(cartRepository: CartRepository): CartItemUseCases.Update<UpdateCartItemInMessage, UpdateCartItemOutMessage> =
         UpdateCartItemUseCase(cartRepository)
 
     fun createCartItemInMsg(

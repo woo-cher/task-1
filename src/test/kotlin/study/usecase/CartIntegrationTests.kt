@@ -17,8 +17,8 @@ import study.generator.TestFactory
 
 @DisplayName("장바구니 통합 테스트")
 class CartIntegrationTests: DescribeSpec({
-    lateinit var createCartUseCase: CartUseCases.CreateCartUseCase<CreateCartInMessage, CreateCartOutMessage>
-    lateinit var getCartUseCase: CartUseCases.GetCartUseCase<GetCartByUserInMessage, GetCartByUserOutMessage>
+    lateinit var createCartUseCase: CartUseCases.Create<CreateCartInMessage, CreateCartOutMessage>
+    lateinit var getCartUseCase: CartUseCases.Get<GetCartByUserInMessage, GetCartByUserOutMessage>
 
     val createInMsg = CreateCartInMessage(TestFactory.testUser)
 

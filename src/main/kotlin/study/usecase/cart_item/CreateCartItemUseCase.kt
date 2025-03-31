@@ -14,7 +14,7 @@ import org.example.study.usecase.cart_item.out_msg.CreateCartItemOutMessage
 class CreateCartItemUseCase(
     private val cartRepository: CartRepository,
     private val itemRepository: ItemRepository
-): CartItemUseCases.CreateCartItemUseCase<CreateCartItemInMessage, CreateCartItemOutMessage> {
+): CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage> {
 
     override fun create(inMsg: CreateCartItemInMessage): CreateCartItemOutMessage {
         ExceptionHandler.handle {
