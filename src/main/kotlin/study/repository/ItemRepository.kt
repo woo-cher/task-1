@@ -6,7 +6,7 @@ import org.example.study.exception.ItemNotFoundException
 import org.example.study.exception.errors.TaskErrors
 import org.example.study.repository.item.dto.GetItemDto
 import org.example.study.repository.item.vo.GetItemVo
-import org.example.study.service.generator.Generator
+import org.example.study.generator.Generator
 
 class ItemRepository(
     private var items: Map<Ids.ItemId, Item> = Generator.generateItems(),

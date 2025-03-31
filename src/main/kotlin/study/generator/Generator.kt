@@ -1,4 +1,4 @@
-package org.example.study.service.generator
+package org.example.study.generator
 
 import org.example.study.domain.entity.Item
 import org.example.study.domain.id.Ids

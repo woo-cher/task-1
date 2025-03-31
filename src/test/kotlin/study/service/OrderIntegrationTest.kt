@@ -17,23 +17,25 @@ import org.example.study.repository.CartRepository
 import org.example.study.repository.OrderRepository
 import org.example.study.repository.cart.dto.CreateCartDto
 import org.example.study.repository.cart_item.dto.CreateCartItemDto
-import org.example.study.service.OrderService
-import org.example.study.service.order.request.CreateOrderRequest
+import org.example.study.usecase.UseCaseHandlerProxy
+import org.example.study.usecase.order.in_msg.CreateOrderInMessage
+import org.example.study.usecase.order.out_msg.CreateOrderOutMessage
 import study.generator.TestCartItemGenerator
 import study.generator.TestFactory
 import study.generator.TestItemGenerator
 
 @DisplayName("주문 통합 테스트")
 class OrderIntegrationTest: DescribeSpec({
-    lateinit var orderService: OrderService
+    lateinit var createOrderUseCase: UseCaseHandlerProxy<CreateOrderInMessage, CreateOrderOutMessage>
     lateinit var createdCart: Cart
     lateinit var cartItems: List<CartItem>
 
     val items = TestItemGenerator.generate()
 
     beforeEach {
+        val orderRepository = OrderRepository()
         val cartRepository = CartRepository()
-        orderService = OrderService(OrderRepository(), cartRepository)
+        createOrderUseCase = TestFactory.createOrderProxy(orderRepository, cartRepository)
 
         createdCart = cartRepository.createCart(CreateCartDto(TestFactory.testUser)).cart
         cartItems = TestCartItemGenerator.generate(items, createdCart.cartId)
@@ -46,17 +48,17 @@ class OrderIntegrationTest: DescribeSpec({
     describe("주문 생성") {
         context("성공 케이스") {
             it("주문 생성 성공") {
-                val request = CreateOrderRequest(TestFactory.testUser, createdCart.cartId, cartItems)
+                val inMsg = CreateOrderInMessage(TestFactory.testUser, createdCart.cartId, cartItems)
 
                 shouldNotThrow<TaskException> {
-                    val response = orderService.create(request)
+                    val outMsg = createOrderUseCase.execute(inMsg)
 
-                    with(response) {
+                    with(outMsg) {
                         cartItems.shouldNotBeEmpty()
                         userId shouldBe TestFactory.testUser
                         status shouldBe OrderStatus.PROCESSED
                     }
-                    with(response.cartItems) {
+                    with(outMsg.cartItems) {
                         shouldForAll { it.cartId shouldBe createdCart.cartId }
                     }
                 }
@@ -64,10 +66,10 @@ class OrderIntegrationTest: DescribeSpec({
         }
         context("실패 케이스") {
             it("주문 생성 실패 - 유저 ID 에 해당하는 장바구니가 없음") {
-                val request = CreateOrderRequest(TestFactory.invalidTestUser, createdCart.cartId, cartItems)
+                val inMsg = CreateOrderInMessage(TestFactory.invalidTestUser, createdCart.cartId, cartItems)
 
                 shouldThrow<CartNotFoundException> {
-                    orderService.create(request)
+                    createOrderUseCase.execute(inMsg)
                 }
             }
         }

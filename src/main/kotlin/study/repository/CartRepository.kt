@@ -16,7 +16,7 @@ import org.example.study.repository.cart_item.dto.UpdateCartItemDto
 import org.example.study.repository.cart_item.vo.CreateCartItemVo
 import org.example.study.repository.cart_item.vo.DeleteCartItemsVo
 import org.example.study.repository.cart_item.vo.UpdateCartItemVo
-import org.example.study.service.generator.Generator
+import org.example.study.generator.Generator
 
 class CartRepository(
     private var cartNum: Long = Generator.startId(),

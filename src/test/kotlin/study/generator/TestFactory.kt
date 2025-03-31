@@ -4,7 +4,8 @@ import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
-import org.example.study.service.generator.Generator
+import org.example.study.repository.OrderRepository
+import org.example.study.generator.Generator
 import org.example.study.usecase.UseCaseHandlerProxy
 import org.example.study.usecase.cart.CreateCartUseCase
 import org.example.study.usecase.cart.GetCartByUserIdUseCase
@@ -21,6 +22,9 @@ import org.example.study.usecase.cart_item.in_msg.UpdateCartItemInMessage
 import org.example.study.usecase.cart_item.out_msg.CreateCartItemOutMessage
 import org.example.study.usecase.cart_item.out_msg.DeleteCartItemsOutMessage
 import org.example.study.usecase.cart_item.out_msg.UpdateCartItemOutMessage
+import org.example.study.usecase.order.CreateOrderUseCase
+import org.example.study.usecase.order.in_msg.CreateOrderInMessage
+import org.example.study.usecase.order.out_msg.CreateOrderOutMessage
 
 object TestFactory {
     private const val TEST_USER = "testUser"
@@ -50,6 +54,9 @@ object TestFactory {
 
     fun updateCartItemProxy(cartRepository: CartRepository): UseCaseHandlerProxy<UpdateCartItemInMessage, UpdateCartItemOutMessage> =
         UseCaseHandlerProxy(UpdateCartItemUseCase(cartRepository))
+
+    fun createOrderProxy(orderRepository: OrderRepository, cartRepository: CartRepository): UseCaseHandlerProxy<CreateOrderInMessage, CreateOrderOutMessage> =
+        UseCaseHandlerProxy(CreateOrderUseCase(orderRepository, cartRepository))
 
     fun createCartItemInMsg(
         userId: Ids.UserId = testUser,
