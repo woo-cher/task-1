@@ -13,7 +13,6 @@ import org.example.study.exception.ItemNotFoundException
 import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
-import org.example.study.usecase.CartItemUseCases
 import org.example.study.usecase.UseCaseHandlerProxy
 import org.example.study.usecase.cart.in_msg.CreateCartInMessage
 import org.example.study.usecase.cart.out_msg.CreateCartOutMessage
@@ -31,18 +30,18 @@ class CartItemIntegrationTests: DescribeSpec({
     lateinit var createdCart: Cart
     lateinit var createCartUseCase: UseCaseHandlerProxy<CreateCartInMessage, CreateCartOutMessage>
 
-    lateinit var createUseCase: CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage>
-    lateinit var deleteUseCase: CartItemUseCases.Delete<DeleteCartItemsInMessage, DeleteCartItemsOutMessage>
-    lateinit var updateUseCase: CartItemUseCases.Update<UpdateCartItemInMessage, UpdateCartItemOutMessage>
+    lateinit var createUseCase: UseCaseHandlerProxy<CreateCartItemInMessage, CreateCartItemOutMessage>
+    lateinit var deleteUseCase: UseCaseHandlerProxy<DeleteCartItemsInMessage, DeleteCartItemsOutMessage>
+    lateinit var updateUseCase: UseCaseHandlerProxy<UpdateCartItemInMessage, UpdateCartItemOutMessage>
 
     beforeEach {
         val cartRepository = CartRepository()
         val cartPolicy = TestFactory.cartPolicy()
 
-        createCartUseCase = TestFactory.createCartUseCaseProxy(cartRepository, cartPolicy)
-        createUseCase = TestFactory.createCartItemUseCase(cartRepository, ItemRepository())
-        deleteUseCase = TestFactory.deleteCartItemUseCase(cartRepository)
-        updateUseCase = TestFactory.updateCartItemUseCase(cartRepository)
+        createCartUseCase = TestFactory.createCartProxy(cartRepository, cartPolicy)
+        createUseCase = TestFactory.createCartItemProxy(cartRepository, ItemRepository())
+        deleteUseCase = TestFactory.deleteCartItemProxy(cartRepository)
+        updateUseCase = TestFactory.updateCartItemProxy(cartRepository)
 
         val createInMsg = CreateCartInMessage(TestFactory.testUser)
         createdCart = createCartUseCase.execute(createInMsg).cart
@@ -54,7 +53,7 @@ class CartItemIntegrationTests: DescribeSpec({
                 val inMsg = TestFactory.createCartItemInMsg(cartId = createdCart.cartId)
 
                 shouldNotThrow<TaskException> {
-                    val response = createUseCase.create(inMsg)
+                    val response = createUseCase.execute(inMsg)
                     println("created : $response")
 
                     with(response) {
@@ -73,7 +72,7 @@ class CartItemIntegrationTests: DescribeSpec({
                 )
 
                 shouldThrow<ItemNotFoundException> {
-                    createUseCase.create(inMsg)
+                    createUseCase.execute(inMsg)
                 }
             }
             it("추가 실패 - 유저 ID 에 해당하는 장바구니가 없음") {
@@ -83,7 +82,7 @@ class CartItemIntegrationTests: DescribeSpec({
                 )
 
                 shouldThrow<CartNotFoundException> {
-                    createUseCase.create(inMsg)
+                    createUseCase.execute(inMsg)
                 }
             }
         }
@@ -93,7 +92,7 @@ class CartItemIntegrationTests: DescribeSpec({
         context("성공 케이스") {
             it("장바구니 상품 제거 성공") {
                 val createCartItemInMsg = TestFactory.createCartItemInMsg(cartId = createdCart.cartId)
-                val createOutMsg = createUseCase.create(createCartItemInMsg)
+                val createOutMsg = createUseCase.execute(createCartItemInMsg)
 
                 val deleteItemIds = listOf(createOutMsg.cartItemId)
                 val deleteInMsg = TestFactory.deleteCartItemInMsg(
@@ -102,7 +101,7 @@ class CartItemIntegrationTests: DescribeSpec({
                 )
 
                 shouldNotThrow<TaskException> {
-                    val deleteResponse = deleteUseCase.delete(deleteInMsg)
+                    val deleteResponse = deleteUseCase.execute(deleteInMsg)
 
                     deleteResponse.cartId shouldBe deleteInMsg.cartId
                     deleteResponse.cartItems shouldNotContainAnyOf deleteItemIds
@@ -112,7 +111,7 @@ class CartItemIntegrationTests: DescribeSpec({
         context("실패 케이스") {
             it("제거 실패 - 존재하지 않는 사용자 장바구니") {
                 val createCartItemInMsg = TestFactory.createCartItemInMsg(cartId = createdCart.cartId)
-                val createOutMsg = createUseCase.create(createCartItemInMsg)
+                val createOutMsg = createUseCase.execute(createCartItemInMsg)
 
                 val deleteItemIds = listOf(createOutMsg.cartItemId)
                 val deleteInMsg = TestFactory.deleteCartItemInMsg(
@@ -122,7 +121,7 @@ class CartItemIntegrationTests: DescribeSpec({
                 )
 
                 shouldThrow<CartNotFoundException> {
-                    deleteUseCase.delete(deleteInMsg)
+                    deleteUseCase.execute(deleteInMsg)
                 }
             }
         }
@@ -134,7 +133,7 @@ class CartItemIntegrationTests: DescribeSpec({
         context("성공 케이스") {
             it("수량 변경 성공") {
                 val createCartItemInMsg = TestFactory.createCartItemInMsg(cartId = createdCart.cartId)
-                val createOutMsg = createUseCase.create(createCartItemInMsg)
+                val createOutMsg = createUseCase.execute(createCartItemInMsg)
                 val updateInMsg = UpdateCartItemInMessage(
                     TestFactory.testUser,
                     createdCart.cartId,
@@ -143,7 +142,7 @@ class CartItemIntegrationTests: DescribeSpec({
                 )
 
                 shouldNotThrow<TaskException> {
-                    val updateResponse = updateUseCase.update(updateInMsg)
+                    val updateResponse = updateUseCase.execute(updateInMsg)
 
                     with(updateResponse) {
                         cartId shouldBe updateInMsg.cartId
@@ -156,7 +155,7 @@ class CartItemIntegrationTests: DescribeSpec({
         context("실패 케이스") {
             it("수량 변경 실패 - 존재하지 않는 사용자 장바구니") {
                 val createCartItemInMsg = TestFactory.createCartItemInMsg(cartId = createdCart.cartId)
-                val createOutMsg = createUseCase.create(createCartItemInMsg)
+                val createOutMsg = createUseCase.execute(createCartItemInMsg)
 
                 val updateInMsg = UpdateCartItemInMessage(
                     TestFactory.invalidTestUser,
@@ -166,7 +165,7 @@ class CartItemIntegrationTests: DescribeSpec({
                 )
 
                 shouldThrow<CartNotFoundException> {
-                    updateUseCase.update(updateInMsg)
+                    updateUseCase.execute(updateInMsg)
                 }
             }
         }

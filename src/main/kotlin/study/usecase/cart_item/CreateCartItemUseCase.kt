@@ -1,6 +1,5 @@
 package org.example.study.usecase.cart_item
 
-import org.example.study.exception.ExceptionHandler
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.cart_item.dto.CreateCartItemDto
@@ -16,11 +15,9 @@ class CreateCartItemUseCase(
     private val itemRepository: ItemRepository
 ): CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage> {
 
-    override fun create(inMsg: CreateCartItemInMessage): CreateCartItemOutMessage {
-        ExceptionHandler.handle {
-            val item = inMsg.getItem()
-            return inMsg.createCartItem(item.price).toOutMsg()
-        }
+    override fun execute(inMsg: CreateCartItemInMessage): CreateCartItemOutMessage {
+        val item = inMsg.getItem()
+        return inMsg.createCartItem(item.price).toOutMsg()
     }
 
     private fun CreateCartItemInMessage.getItem(): GetItemVo {
@@ -32,4 +29,5 @@ class CreateCartItemUseCase(
         return cartRepository.createCartItem(dto)
     }
     private fun CreateCartItemVo.toOutMsg() = CreateCartItemOutMessage(cartId, cartItemId, cnt)
+
 }

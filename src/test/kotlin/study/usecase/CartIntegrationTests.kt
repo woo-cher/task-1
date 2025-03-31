@@ -25,8 +25,8 @@ class CartIntegrationTests: DescribeSpec({
     beforeEach {
         val cartRepository = CartRepository()
         val cartPolicy = TestFactory.cartPolicy()
-        createCartUseCase = TestFactory.createCartUseCaseProxy(cartRepository, cartPolicy)
-        getCartUseCase = TestFactory.getCartUseCaseProxy(cartRepository)
+        createCartUseCase = TestFactory.createCartProxy(cartRepository, cartPolicy)
+        getCartUseCase = TestFactory.getCartProxy(cartRepository)
     }
 
     describe("장바구니 생성") {

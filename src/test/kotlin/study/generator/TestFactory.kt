@@ -5,7 +5,6 @@ import org.example.study.domain.policy.CartPolicy
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.generator.Generator
-import org.example.study.usecase.CartItemUseCases
 import org.example.study.usecase.UseCaseHandlerProxy
 import org.example.study.usecase.cart.CreateCartUseCase
 import org.example.study.usecase.cart.GetCartByUserIdUseCase
@@ -37,20 +36,20 @@ object TestFactory {
 
     fun cartPolicy() = CartPolicy()
 
-    fun createCartItemUseCase(cartRepository: CartRepository, itemRepository: ItemRepository): CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage> =
-        CreateCartItemUseCase(cartRepository, itemRepository)
-
-    fun deleteCartItemUseCase(cartRepository: CartRepository): CartItemUseCases.Delete<DeleteCartItemsInMessage, DeleteCartItemsOutMessage> =
-        DeleteCartItemsUseCase(cartRepository)
-
-    fun updateCartItemUseCase(cartRepository: CartRepository): CartItemUseCases.Update<UpdateCartItemInMessage, UpdateCartItemOutMessage> =
-        UpdateCartItemUseCase(cartRepository)
-
-    fun createCartUseCaseProxy(cartRepository: CartRepository, cartPolicy: CartPolicy): UseCaseHandlerProxy<CreateCartInMessage, CreateCartOutMessage> =
+    fun createCartProxy(cartRepository: CartRepository, cartPolicy: CartPolicy): UseCaseHandlerProxy<CreateCartInMessage, CreateCartOutMessage> =
         UseCaseHandlerProxy(CreateCartUseCase(cartRepository, cartPolicy))
 
-    fun getCartUseCaseProxy(cartRepository: CartRepository): UseCaseHandlerProxy<GetCartByUserInMessage, GetCartByUserOutMessage> =
+    fun getCartProxy(cartRepository: CartRepository): UseCaseHandlerProxy<GetCartByUserInMessage, GetCartByUserOutMessage> =
         UseCaseHandlerProxy(GetCartByUserIdUseCase(cartRepository))
+
+    fun createCartItemProxy(cartRepository: CartRepository, itemRepository: ItemRepository): UseCaseHandlerProxy<CreateCartItemInMessage, CreateCartItemOutMessage> =
+        UseCaseHandlerProxy(CreateCartItemUseCase(cartRepository, itemRepository))
+
+    fun deleteCartItemProxy(cartRepository: CartRepository): UseCaseHandlerProxy<DeleteCartItemsInMessage, DeleteCartItemsOutMessage> =
+        UseCaseHandlerProxy(DeleteCartItemsUseCase(cartRepository))
+
+    fun updateCartItemProxy(cartRepository: CartRepository): UseCaseHandlerProxy<UpdateCartItemInMessage, UpdateCartItemOutMessage> =
+        UseCaseHandlerProxy(UpdateCartItemUseCase(cartRepository))
 
     fun createCartItemInMsg(
         userId: Ids.UserId = testUser,
