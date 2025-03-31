@@ -6,7 +6,7 @@ import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.service.generator.Generator
 import org.example.study.usecase.CartItemUseCases
-import org.example.study.usecase.CartUseCases
+import org.example.study.usecase.UseCaseHandlerProxy
 import org.example.study.usecase.cart.CreateCartUseCase
 import org.example.study.usecase.cart.GetCartByUserIdUseCase
 import org.example.study.usecase.cart.in_msg.CreateCartInMessage
@@ -37,12 +37,6 @@ object TestFactory {
 
     fun cartPolicy() = CartPolicy()
 
-    fun createCartUseCase(cartRepository: CartRepository, cartPolicy: CartPolicy): CartUseCases.Create<CreateCartInMessage, CreateCartOutMessage> =
-        CreateCartUseCase(cartRepository, cartPolicy)
-
-    fun getCartUseCase(cartRepository: CartRepository): CartUseCases.Get<GetCartByUserInMessage, GetCartByUserOutMessage> =
-        GetCartByUserIdUseCase(cartRepository)
-
     fun createCartItemUseCase(cartRepository: CartRepository, itemRepository: ItemRepository): CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage> =
         CreateCartItemUseCase(cartRepository, itemRepository)
 
@@ -51,6 +45,12 @@ object TestFactory {
 
     fun updateCartItemUseCase(cartRepository: CartRepository): CartItemUseCases.Update<UpdateCartItemInMessage, UpdateCartItemOutMessage> =
         UpdateCartItemUseCase(cartRepository)
+
+    fun createCartUseCaseProxy(cartRepository: CartRepository, cartPolicy: CartPolicy): UseCaseHandlerProxy<CreateCartInMessage, CreateCartOutMessage> =
+        UseCaseHandlerProxy(CreateCartUseCase(cartRepository, cartPolicy))
+
+    fun getCartUseCaseProxy(cartRepository: CartRepository): UseCaseHandlerProxy<GetCartByUserInMessage, GetCartByUserOutMessage> =
+        UseCaseHandlerProxy(GetCartByUserIdUseCase(cartRepository))
 
     fun createCartItemInMsg(
         userId: Ids.UserId = testUser,

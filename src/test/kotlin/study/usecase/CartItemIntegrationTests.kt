@@ -14,7 +14,7 @@ import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.usecase.CartItemUseCases
-import org.example.study.usecase.CartUseCases
+import org.example.study.usecase.UseCaseHandlerProxy
 import org.example.study.usecase.cart.in_msg.CreateCartInMessage
 import org.example.study.usecase.cart.out_msg.CreateCartOutMessage
 import org.example.study.usecase.cart_item.in_msg.CreateCartItemInMessage
@@ -29,7 +29,7 @@ import study.generator.TestFactory.toItemId
 @DisplayName("장바구니 상품 통합 테스트")
 class CartItemIntegrationTests: DescribeSpec({
     lateinit var createdCart: Cart
-    lateinit var createCartUseCase: CartUseCases.Create<CreateCartInMessage, CreateCartOutMessage>
+    lateinit var createCartUseCase: UseCaseHandlerProxy<CreateCartInMessage, CreateCartOutMessage>
 
     lateinit var createUseCase: CartItemUseCases.Create<CreateCartItemInMessage, CreateCartItemOutMessage>
     lateinit var deleteUseCase: CartItemUseCases.Delete<DeleteCartItemsInMessage, DeleteCartItemsOutMessage>
@@ -39,13 +39,13 @@ class CartItemIntegrationTests: DescribeSpec({
         val cartRepository = CartRepository()
         val cartPolicy = TestFactory.cartPolicy()
 
-        createCartUseCase = TestFactory.createCartUseCase(cartRepository, cartPolicy)
+        createCartUseCase = TestFactory.createCartUseCaseProxy(cartRepository, cartPolicy)
         createUseCase = TestFactory.createCartItemUseCase(cartRepository, ItemRepository())
         deleteUseCase = TestFactory.deleteCartItemUseCase(cartRepository)
         updateUseCase = TestFactory.updateCartItemUseCase(cartRepository)
 
         val createInMsg = CreateCartInMessage(TestFactory.testUser)
-        createdCart = createCartUseCase.create(createInMsg).cart
+        createdCart = createCartUseCase.execute(createInMsg).cart
     }
 
     describe("장바구니 상품 추가") {

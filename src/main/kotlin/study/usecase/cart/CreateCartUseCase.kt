@@ -5,7 +5,6 @@ import org.example.study.domain.id.Ids
 import org.example.study.domain.policy.CartPolicy
 import org.example.study.domain.policy.ExceptionThrower
 import org.example.study.exception.CartAlreadyExistException
-import org.example.study.exception.ExceptionHandler
 import org.example.study.exception.errors.TaskErrors
 import org.example.study.repository.CartRepository
 import org.example.study.repository.cart.dto.CreateCartDto
@@ -20,11 +19,9 @@ class CreateCartUseCase(
     private val cartPolicy: CartPolicy,
 ): CartUseCases.Create<CreateCartInMessage, CreateCartOutMessage> {
 
-    override fun create(inMsg: CreateCartInMessage): CreateCartOutMessage {
-        return ExceptionHandler.handle {
-            cartPolicy.validateExistsOrThrow(supplyCart(inMsg.userId), alreadyCartExists)
-            cartRepository.createCart(inMsg.toDto()).toOutMsg()
-        }
+    override fun execute(inMsg: CreateCartInMessage): CreateCartOutMessage {
+        cartPolicy.validateExistsOrThrow(supplyCart(inMsg.userId), alreadyCartExists)
+        return cartRepository.createCart(inMsg.toDto()).toOutMsg()
     }
 
     private fun CreateCartInMessage.toDto() = CreateCartDto(userId)

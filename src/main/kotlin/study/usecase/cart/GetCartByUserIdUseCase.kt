@@ -11,7 +11,7 @@ class GetCartByUserIdUseCase(
     private val cartRepository: CartRepository
 ): CartUseCases.Get<GetCartByUserInMessage, GetCartByUserOutMessage> {
 
-    override fun get(inMsg: GetCartByUserInMessage): GetCartByUserOutMessage = inMsg.getCart().toOutMsg()
+    override fun execute(inMsg: GetCartByUserInMessage): GetCartByUserOutMessage = inMsg.getCart().toOutMsg()
 
     private fun GetCartByUserInMessage.getCart(): GetCartByUserVo {
         val dto = GetCartByUserDto(userId)
