@@ -6,7 +6,7 @@ import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
 import org.example.study.repository.OrderRepository
 import org.example.study.generator.Generator
-import org.example.study.usecase.UseCaseHandlerProxy
+import org.example.study.usecase.handler.UseCaseHandlerProxy
 import org.example.study.usecase.cart.CreateCartUseCase
 import org.example.study.usecase.cart.GetCartByUserIdUseCase
 import org.example.study.usecase.cart.in_msg.CreateCartInMessage

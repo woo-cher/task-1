@@ -13,7 +13,7 @@ import org.example.study.exception.ItemNotFoundException
 import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
 import org.example.study.repository.ItemRepository
-import org.example.study.usecase.UseCaseHandlerProxy
+import org.example.study.usecase.handler.UseCaseHandlerProxy
 import org.example.study.usecase.cart.in_msg.CreateCartInMessage
 import org.example.study.usecase.cart.out_msg.CreateCartOutMessage
 import org.example.study.usecase.cart_item.in_msg.CreateCartItemInMessage

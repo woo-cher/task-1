@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldBe
 import org.example.study.exception.CartAlreadyExistException
 import org.example.study.exception.TaskException
 import org.example.study.repository.CartRepository
-import org.example.study.usecase.UseCaseHandlerProxy
+import org.example.study.usecase.handler.UseCaseHandlerProxy
 import org.example.study.usecase.cart.in_msg.CreateCartInMessage
 import org.example.study.usecase.cart.in_msg.GetCartByUserInMessage
 import org.example.study.usecase.cart.out_msg.CreateCartOutMessage

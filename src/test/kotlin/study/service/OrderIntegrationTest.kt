@@ -17,7 +17,7 @@ import org.example.study.repository.CartRepository
 import org.example.study.repository.OrderRepository
 import org.example.study.repository.cart.dto.CreateCartDto
 import org.example.study.repository.cart_item.dto.CreateCartItemDto
-import org.example.study.usecase.UseCaseHandlerProxy
+import org.example.study.usecase.handler.UseCaseHandlerProxy
 import org.example.study.usecase.order.in_msg.CreateOrderInMessage
 import org.example.study.usecase.order.out_msg.CreateOrderOutMessage
 import study.generator.TestCartItemGenerator
