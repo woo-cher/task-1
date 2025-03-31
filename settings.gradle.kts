@@ -3,3 +3,4 @@ plugins {
 }
 rootProject.name = "task-1"
 
+include("application", "usecase", "integration-test", "repository", "domain")

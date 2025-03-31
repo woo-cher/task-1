@@ -2,11 +2,28 @@ plugins {
     kotlin("jvm") version "2.1.0"
 }
 
-group = "org.study"
-version = "1.0-SNAPSHOT"
+allprojects {
+    group = "org.study"
+    version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+
+    dependencies {
+        implementation(project(":application"))
+    }
+}
+
+project(":usecase") {
+    dependencies {
+        implementation(project(":repository"))
+        implementation(project(":domain"))
+    }
 }
 
 dependencies {
