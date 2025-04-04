@@ -1,7 +1,7 @@
 package study.cart.vo
 
-import study.persistence.Cart
+import study.type.data.CartData
 
 data class CreateCartVo(
-    val cart: Cart
+    val cart: CartData
 )

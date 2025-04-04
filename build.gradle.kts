@@ -30,7 +30,6 @@ project(":usecase") {
 project(":domain") {
     dependencies {
         implementation(project(":application"))
-        implementation(project(":repository")) // temp
     }
 }
 

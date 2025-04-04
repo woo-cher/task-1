@@ -1,7 +1,7 @@
 package study.cart.out_msg
 
-import study.persistence.Cart
+import study.type.data.CartData
 
 data class GetCartByUserOutMessage(
-    val cart: Cart?
+    val cart: CartData?
 )

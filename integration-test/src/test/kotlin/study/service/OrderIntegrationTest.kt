@@ -18,8 +18,8 @@ import study.generator.TestItemGenerator
 import study.handler.UseCaseHandlerProxy
 import study.order.in_msg.CreateOrderInMessage
 import study.order.out_msg.CreateOrderOutMessage
-import study.persistence.Cart
 import study.persistence.CartItem
+import study.type.data.CartData
 import study.type.enums.OrderStatus
 import study.type.exception.CartNotFoundException
 import study.type.exception.TaskException
@@ -27,7 +27,7 @@ import study.type.exception.TaskException
 @DisplayName("주문 통합 테스트")
 class OrderIntegrationTest: DescribeSpec({
     lateinit var createOrderUseCase: UseCaseHandlerProxy<CreateOrderInMessage, CreateOrderOutMessage>
-    lateinit var createdCart: Cart
+    lateinit var createdCart: CartData
     lateinit var cartItems: List<CartItem>
 
     val items = TestItemGenerator.generate()

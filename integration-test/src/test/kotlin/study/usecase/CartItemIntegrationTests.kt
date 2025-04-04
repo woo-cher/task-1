@@ -17,17 +17,17 @@ import study.cart_item.in_msg.UpdateCartItemInMessage
 import study.cart_item.out_msg.CreateCartItemOutMessage
 import study.cart_item.out_msg.DeleteCartItemsOutMessage
 import study.cart_item.out_msg.UpdateCartItemOutMessage
-import study.persistence.Cart
 import study.generator.TestFactory
 import study.generator.TestFactory.toItemId
 import study.handler.UseCaseHandlerProxy
+import study.type.data.CartData
 import study.type.exception.CartNotFoundException
 import study.type.exception.ItemNotFoundException
 import study.type.exception.TaskException
 
 @DisplayName("장바구니 상품 통합 테스트")
 class CartItemIntegrationTests: DescribeSpec({
-    lateinit var createdCart: Cart
+    lateinit var createdCart: CartData
     lateinit var createCartUseCase: UseCaseHandlerProxy<CreateCartInMessage, CreateCartOutMessage>
 
     lateinit var createUseCase: UseCaseHandlerProxy<CreateCartItemInMessage, CreateCartItemOutMessage>

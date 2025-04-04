@@ -25,7 +25,7 @@ class CartRepository(
 ) {
     fun findCartByUser(dto: GetCartByUserDto): GetCartByUserVo {
         val target = carts.get(dto.userId)
-        return GetCartByUserVo(target)
+        return GetCartByUserVo(target?.toData())
     }
 
     fun createCart(dto: CreateCartDto): CreateCartVo {
@@ -35,7 +35,7 @@ class CartRepository(
         carts.put(dto.userId, cart)
         cartNum = Ids.autoIncrement(cartNum)
 
-        return CreateCartVo(cart)
+        return CreateCartVo(cart.toData())
     }
 
     fun createCartItem(dto: CreateCartItemDto): CreateCartItemVo {

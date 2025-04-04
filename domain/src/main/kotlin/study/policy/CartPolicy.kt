@@ -1,12 +1,12 @@
 package study.policy
 
-import study.persistence.Cart
+import study.type.data.CartData
 import study.type.id.Ids
 
 class CartPolicy {
 
     fun validateExistsOrThrow(
-        cartSupplier: () -> Cart?,
+        cartSupplier: () -> CartData?,
         thrower: ExceptionThrower<Ids.UserId>
     ) {
         cartSupplier()?.let { thrower.invokeWith(it.userId) }

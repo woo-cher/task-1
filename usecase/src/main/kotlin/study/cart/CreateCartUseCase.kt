@@ -7,9 +7,9 @@ import study.cart.dto.GetCartByUserDto
 import study.cart.in_msg.CreateCartInMessage
 import study.cart.out_msg.CreateCartOutMessage
 import study.cart.vo.CreateCartVo
-import study.persistence.Cart
 import study.policy.CartPolicy
 import study.policy.ExceptionThrower
+import study.type.data.CartData
 import study.type.exception.CartAlreadyExistException
 import study.type.exception.errors.TaskErrors
 import study.type.id.Ids
@@ -25,7 +25,7 @@ class CreateCartUseCase(
     }
 
     private fun CreateCartInMessage.toDto() = CreateCartDto(userId)
-    private fun supplyCart(userId: Ids.UserId): () -> Cart? = {
+    private fun supplyCart(userId: Ids.UserId): () -> CartData? = {
         cartRepository.findCartByUser(GetCartByUserDto(userId)).cart
     }
     private val alreadyCartExists = ExceptionThrower<Ids.UserId> { userId ->
